@@ -1,0 +1,1765 @@
+[
+    {
+        "id": "c78f843c437bda5c",
+        "type": "tab",
+        "label": "Monitor service",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "764bab4731a893bb",
+        "type": "ui_ui_control",
+        "z": "c78f843c437bda5c",
+        "name": "",
+        "events": "all",
+        "x": 80,
+        "y": 400,
+        "wires": [
+            [
+                "e68ea59f64f377a4",
+                "6006c17010f25e8f"
+            ]
+        ]
+    },
+    {
+        "id": "2f8ece999fcd63d3",
+        "type": "http request",
+        "z": "c78f843c437bda5c",
+        "name": "get partners",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://auroral-agent:4000/api/collaboration/partners",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 1030,
+        "y": 40,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "bd7a8d11f3d4f258",
+        "type": "auroralDevice",
+        "z": "c78f843c437bda5c",
+        "name": "Monitor service",
+        "adapterId": "node-red-consumer",
+        "agent": "47fe486c414b603c",
+        "regType": "newItem",
+        "outputs": 1,
+        "inputs": 1,
+        "allowInput": true,
+        "allowEventSubscription": false,
+        "subscribedEvents": [],
+        "devicetype": "Device",
+        "nop": true,
+        "unregistering": true,
+        "mergePidOutputs": true,
+        "td": "{\n  \"@context\": \"https://www.w3.org/2019/wot/td/v1\",\n  \"title\": \"Monitor service\",\n  \"securityDefinitions\": {\n    \"nosec_sc\": {\n      \"scheme\": \"nosec\"\n    }\n  },\n  \"security\": \"nosec_sc\",\n  \"properties\": {},\n  \"actions\": {},\n  \"events\": {},\n  \"adapterId\": \"node-red-consumer\"\n  \n}",
+        "pids": [],
+        "eids": [],
+        "x": 400,
+        "y": 320,
+        "wires": [
+            [
+                "ba1314ed35175558"
+            ]
+        ]
+    },
+    {
+        "id": "4874ea03920fd755",
+        "type": "registrations",
+        "z": "c78f843c437bda5c",
+        "name": "",
+        "agent": "47fe486c414b603c",
+        "pids": "PID1",
+        "x": 310,
+        "y": 100,
+        "wires": [
+            [
+                "df8d3b28caa9f0de"
+            ]
+        ]
+    },
+    {
+        "id": "805dd239f4720275",
+        "type": "inject",
+        "z": "c78f843c437bda5c",
+        "name": "",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 130,
+        "y": 40,
+        "wires": [
+            [
+                "4874ea03920fd755"
+            ]
+        ]
+    },
+    {
+        "id": "df8d3b28caa9f0de",
+        "type": "function",
+        "z": "c78f843c437bda5c",
+        "name": "filter consumer",
+        "func": "if(msg.payload){\n    for(const object of msg.payload) {\n       \n        if(object.adapterId === \"node-red-consumer\")\n        {\n            msg.myOid = object.oid\n        }\n    }\n}\nif(msg.myOid){\n    return msg;\n} else {\n     node.warn('Object not yet registered');\n    return [null,{payload:'Please wait before item is registered'}]\n}\n",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 500,
+        "y": 40,
+        "wires": [
+            [
+                "d87a3059128ecdcb"
+            ],
+            [
+                "756744bda2c6491f",
+                "1ac765e0838ed47d"
+            ]
+        ]
+    },
+    {
+        "id": "d87a3059128ecdcb",
+        "type": "change",
+        "z": "c78f843c437bda5c",
+        "name": "Set global variables",
+        "rules": [
+            {
+                "t": "set",
+                "p": "myOid",
+                "pt": "flow",
+                "to": "myOid",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 770,
+        "y": 40,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "756744bda2c6491f",
+        "type": "delay",
+        "z": "c78f843c437bda5c",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "10",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 500,
+        "y": 100,
+        "wires": [
+            [
+                "4874ea03920fd755"
+            ]
+        ]
+    },
+    {
+        "id": "204f1a8b3f538386",
+        "type": "comment",
+        "z": "c78f843c437bda5c",
+        "name": "get my oid",
+        "info": "",
+        "x": 320,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "cd3850f6d89e9979",
+        "type": "comment",
+        "z": "c78f843c437bda5c",
+        "name": "Get data button",
+        "info": "",
+        "x": 520,
+        "y": 1060,
+        "wires": []
+    },
+    {
+        "id": "7e2a70cd22392f94",
+        "type": "link in",
+        "z": "c78f843c437bda5c",
+        "name": "getTd",
+        "links": [
+            "bc482a43cff37fa2"
+        ],
+        "x": 65,
+        "y": 220,
+        "wires": [
+            [
+                "f09635a2fa535806"
+            ]
+        ]
+    },
+    {
+        "id": "c925a5d316fec054",
+        "type": "http request",
+        "z": "c78f843c437bda5c",
+        "name": "Get item TD",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://auroral-agent:4000/api/discovery/remote/td/{{oid}}/{{myOid}}",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 350,
+        "y": 220,
+        "wires": [
+            [
+                "5373809c42ca57c0"
+            ]
+        ]
+    },
+    {
+        "id": "f09635a2fa535806",
+        "type": "change",
+        "z": "c78f843c437bda5c",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "myOid",
+                "pt": "msg",
+                "to": "myOid",
+                "tot": "flow"
+            },
+            {
+                "t": "set",
+                "p": "oid",
+                "pt": "msg",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 180,
+        "y": 220,
+        "wires": [
+            [
+                "c925a5d316fec054"
+            ]
+        ]
+    },
+    {
+        "id": "bc482a43cff37fa2",
+        "type": "link out",
+        "z": "c78f843c437bda5c",
+        "name": "",
+        "mode": "link",
+        "links": [
+            "7e2a70cd22392f94"
+        ],
+        "x": 965,
+        "y": 700,
+        "wires": []
+    },
+    {
+        "id": "5373809c42ca57c0",
+        "type": "function",
+        "z": "c78f843c437bda5c",
+        "name": "parsing",
+        "func": "if(msg.statusCode === 200){\n    if(msg.payload.message.message){\n        msg.payload = msg.payload.message.message\n    } else {\n        msg.payload = msg.payload.message\n    }\n    delete msg.responseUrl\n    delete msg.redirectList\n    delete msg.retry\n    delete msg.headers\n    return msg;\n} else {\n    node.warn('Warning status code:' + msg.statusCode)\n    return [null,{payload: 'Warning status code:' + msg.statusCode}]\n}\n",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 500,
+        "y": 220,
+        "wires": [
+            [
+                "efa67524f9a239dd"
+            ],
+            [
+                "9a8ccf173873d768"
+            ]
+        ]
+    },
+    {
+        "id": "fe11e4ab67886947",
+        "type": "comment",
+        "z": "c78f843c437bda5c",
+        "name": "Get item td and extract props",
+        "info": "",
+        "x": 160,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "fbb311a419c76886",
+        "type": "ui_dropdown",
+        "z": "c78f843c437bda5c",
+        "name": "",
+        "label": "Source",
+        "tooltip": "",
+        "place": "Select option",
+        "group": "19ff0589e9dc01ae",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "multiple": false,
+        "options": [],
+        "payload": "",
+        "topic": "topic",
+        "topicType": "msg",
+        "className": "",
+        "x": 300,
+        "y": 460,
+        "wires": [
+            [
+                "20e6a83088d30e35",
+                "87a35fd7e67f0367"
+            ]
+        ]
+    },
+    {
+        "id": "20e6a83088d30e35",
+        "type": "switch",
+        "z": "c78f843c437bda5c",
+        "name": "",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "myNode",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "myOrg",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 3,
+        "x": 510,
+        "y": 460,
+        "wires": [
+            [
+                "5e05244719874bd9"
+            ],
+            [
+                "de832bb9c9caed56"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "c590dadcdb31833e",
+        "type": "link in",
+        "z": "c78f843c437bda5c",
+        "name": "updateItems",
+        "links": [
+            "6078d64933cb661f",
+            "ef35bc627d47b0bc",
+            "1a829f7a8b4171da"
+        ],
+        "x": 335,
+        "y": 720,
+        "wires": [
+            [
+                "f99fbed25d93a745"
+            ]
+        ]
+    },
+    {
+        "id": "9b3d55bbd90ad28d",
+        "type": "ui_dropdown",
+        "z": "c78f843c437bda5c",
+        "name": "",
+        "label": "Item",
+        "tooltip": "",
+        "place": "Select option",
+        "group": "19ff0589e9dc01ae",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "multiple": false,
+        "options": [
+            {
+                "label": "",
+                "value": "",
+                "type": "str"
+            }
+        ],
+        "payload": "",
+        "topic": "topic",
+        "topicType": "msg",
+        "className": "",
+        "x": 830,
+        "y": 700,
+        "wires": [
+            [
+                "bc482a43cff37fa2",
+                "f6522d2179943646"
+            ]
+        ]
+    },
+    {
+        "id": "12f9c393ad4ca7c0",
+        "type": "function",
+        "z": "c78f843c437bda5c",
+        "name": "parsing",
+        "func": "msg.options = []\nif(msg.payload){\n    for(const item of msg.payload){\n        const obj = {}\n        obj[item.name] = item.oid\n        msg.options.push(obj)\n    }\n  \n} else {\n   msg.options = []\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 680,
+        "y": 700,
+        "wires": [
+            [
+                "9b3d55bbd90ad28d"
+            ]
+        ]
+    },
+    {
+        "id": "f99fbed25d93a745",
+        "type": "change",
+        "z": "c78f843c437bda5c",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "items",
+                "tot": "flow"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 520,
+        "y": 740,
+        "wires": [
+            [
+                "12f9c393ad4ca7c0"
+            ]
+        ]
+    },
+    {
+        "id": "8da7b5bfdf31429d",
+        "type": "comment",
+        "z": "c78f843c437bda5c",
+        "name": "Update items",
+        "info": "",
+        "x": 510,
+        "y": 700,
+        "wires": []
+    },
+    {
+        "id": "844ecf5528bcdfeb",
+        "type": "comment",
+        "z": "c78f843c437bda5c",
+        "name": "Update TD props",
+        "info": "",
+        "x": 520,
+        "y": 820,
+        "wires": []
+    },
+    {
+        "id": "1a2d3d94197c0761",
+        "type": "change",
+        "z": "c78f843c437bda5c",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "properties",
+                "pt": "msg",
+                "to": "properties",
+                "tot": "flow"
+            },
+            {
+                "t": "set",
+                "p": "td",
+                "pt": "msg",
+                "to": "td",
+                "tot": "flow"
+            },
+            {
+                "t": "delete",
+                "p": "payload",
+                "pt": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 520,
+        "y": 880,
+        "wires": [
+            [
+                "2a059d06e1742ddd",
+                "982a9446e71550dd",
+                "d02019aa86b0327d",
+                "08c05b6008129f7a"
+            ]
+        ]
+    },
+    {
+        "id": "8468a415f40fac1d",
+        "type": "link in",
+        "z": "c78f843c437bda5c",
+        "name": "updateTd",
+        "links": [
+            "2b7de10a027d1988",
+            "ef35bc627d47b0bc",
+            "b3c58cd6cfcbb068"
+        ],
+        "x": 335,
+        "y": 860,
+        "wires": [
+            [
+                "1a2d3d94197c0761"
+            ]
+        ]
+    },
+    {
+        "id": "2b7de10a027d1988",
+        "type": "link out",
+        "z": "c78f843c437bda5c",
+        "name": "",
+        "mode": "link",
+        "links": [
+            "8468a415f40fac1d",
+            "c97e7ce82ea309dd"
+        ],
+        "x": 955,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "de832bb9c9caed56",
+        "type": "http request",
+        "z": "c78f843c437bda5c",
+        "name": "Get myOrg items",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://auroral-agent:4000/api/discovery/items/organisation",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 690,
+        "y": 480,
+        "wires": [
+            [
+                "686314160a7c961e"
+            ]
+        ]
+    },
+    {
+        "id": "686314160a7c961e",
+        "type": "function",
+        "z": "c78f843c437bda5c",
+        "name": "parsing",
+        "func": "if(msg.statusCode === 200){\n    msg.items = msg.payload.message\n    delete msg.statusCode\n    delete msg.responseUrl\n    delete msg.redirectList\n    delete msg.retry\n    delete msg.headers\n  \n} else {\n    node.warn('Warning n1')\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 860,
+        "y": 480,
+        "wires": [
+            [
+                "46a64e550b6101c0"
+            ]
+        ]
+    },
+    {
+        "id": "5e05244719874bd9",
+        "type": "registrations",
+        "z": "c78f843c437bda5c",
+        "name": "",
+        "agent": "47fe486c414b603c",
+        "pids": "PID1",
+        "x": 670,
+        "y": 420,
+        "wires": [
+            [
+                "575b998f9226542d"
+            ]
+        ]
+    },
+    {
+        "id": "575b998f9226542d",
+        "type": "function",
+        "z": "c78f843c437bda5c",
+        "name": "parsing",
+        "func": "msg.items=[]\nif(msg.payload.length > 0 ){\n    for(const obj of msg.payload){\n        msg.items.push({name: obj.name, oid: obj.oid, company: 'myself' })\n    }\n} else {\n    node.warn('Warning n1')\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 860,
+        "y": 420,
+        "wires": [
+            [
+                "46a64e550b6101c0"
+            ]
+        ]
+    },
+    {
+        "id": "46a64e550b6101c0",
+        "type": "change",
+        "z": "c78f843c437bda5c",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "items",
+                "pt": "flow",
+                "to": "items",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1040,
+        "y": 440,
+        "wires": [
+            [
+                "1a829f7a8b4171da"
+            ]
+        ]
+    },
+    {
+        "id": "1a829f7a8b4171da",
+        "type": "link out",
+        "z": "c78f843c437bda5c",
+        "name": "",
+        "mode": "link",
+        "links": [
+            "c590dadcdb31833e"
+        ],
+        "x": 1155,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "e68ea59f64f377a4",
+        "type": "change",
+        "z": "c78f843c437bda5c",
+        "name": "options",
+        "rules": [
+            {
+                "t": "set",
+                "p": "options",
+                "pt": "msg",
+                "to": "[{\"My node\":\"myNode\"},{\"My org\":\"myOrg\"}]",
+                "tot": "json"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 160,
+        "y": 460,
+        "wires": [
+            [
+                "fbb311a419c76886"
+            ]
+        ]
+    },
+    {
+        "id": "ad5fa1c72a84f23a",
+        "type": "link in",
+        "z": "c78f843c437bda5c",
+        "name": "clear UI",
+        "links": [
+            "6006c17010f25e8f",
+            "dafb190b99f408c7",
+            "ac578a2c5c637ddf",
+            "87a35fd7e67f0367"
+        ],
+        "x": 75,
+        "y": 1000,
+        "wires": [
+            [
+                "80121613b9dbb45a",
+                "f6522d2179943646",
+                "90e7455996968c2b",
+                "252e890592b4771c",
+                "6844483862faf6f1"
+            ]
+        ]
+    },
+    {
+        "id": "6006c17010f25e8f",
+        "type": "link out",
+        "z": "c78f843c437bda5c",
+        "name": "",
+        "mode": "link",
+        "links": [
+            "ad5fa1c72a84f23a"
+        ],
+        "x": 195,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "87a35fd7e67f0367",
+        "type": "link out",
+        "z": "c78f843c437bda5c",
+        "name": "",
+        "mode": "link",
+        "links": [
+            "ad5fa1c72a84f23a"
+        ],
+        "x": 475,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "9138d06a4ebbbef4",
+        "type": "comment",
+        "z": "c78f843c437bda5c",
+        "name": "Source changed",
+        "info": "",
+        "x": 320,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "efa67524f9a239dd",
+        "type": "function",
+        "z": "c78f843c437bda5c",
+        "name": "Extract props",
+        "func": "\nif(msg.payload.properties) {\n    msg.properties = Object.keys(msg.payload.properties)\n} else {\n    msg.properties = []\n}\nmsg.td = JSON.stringify(msg.payload, null, 2);\nreturn msg\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 680,
+        "y": 200,
+        "wires": [
+            [
+                "46cebfd5012c58c2",
+                "19bb57dc3d4f8f26"
+            ]
+        ]
+    },
+    {
+        "id": "46cebfd5012c58c2",
+        "type": "change",
+        "z": "c78f843c437bda5c",
+        "name": "Store",
+        "rules": [
+            {
+                "t": "set",
+                "p": "properties",
+                "pt": "flow",
+                "to": "properties",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "td",
+                "pt": "flow",
+                "to": "td",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "selectedOid",
+                "pt": "flow",
+                "to": "oid",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 860,
+        "y": 220,
+        "wires": [
+            [
+                "2b7de10a027d1988"
+            ]
+        ]
+    },
+    {
+        "id": "ce89446f684bd150",
+        "type": "comment",
+        "z": "c78f843c437bda5c",
+        "name": "Request data",
+        "info": "",
+        "x": 110,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "ce7628616415b16c",
+        "type": "link in",
+        "z": "c78f843c437bda5c",
+        "name": "getData",
+        "links": [
+            "aa1b17cff47cbc30"
+        ],
+        "x": 65,
+        "y": 320,
+        "wires": [
+            [
+                "897f9e220353db1a"
+            ]
+        ]
+    },
+    {
+        "id": "897f9e220353db1a",
+        "type": "change",
+        "z": "c78f843c437bda5c",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "type",
+                "pt": "msg",
+                "to": "property",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "oid",
+                "pt": "msg",
+                "to": "selectedOid",
+                "tot": "flow"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 180,
+        "y": 320,
+        "wires": [
+            [
+                "bd7a8d11f3d4f258"
+            ]
+        ]
+    },
+    {
+        "id": "2a059d06e1742ddd",
+        "type": "ui_template",
+        "z": "c78f843c437bda5c",
+        "group": "7fe25f629f718e1f",
+        "name": "TD",
+        "order": 2,
+        "width": 10,
+        "height": 6,
+        "format": "<div>\n    <h4>TD:</h4>\n    <pre>{{msg.td}}</pre>\n</div>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 770,
+        "y": 940,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e7f70832f34cfcf9",
+        "type": "ui_dropdown",
+        "z": "c78f843c437bda5c",
+        "name": "",
+        "label": "Property",
+        "tooltip": "",
+        "place": "Select property",
+        "group": "19ff0589e9dc01ae",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "multiple": false,
+        "options": [
+            {
+                "label": "",
+                "value": "",
+                "type": "str"
+            }
+        ],
+        "payload": "",
+        "topic": "topic",
+        "topicType": "msg",
+        "className": "",
+        "x": 860,
+        "y": 840,
+        "wires": [
+            [
+                "57ab7ea9a37e7ece"
+            ]
+        ]
+    },
+    {
+        "id": "982a9446e71550dd",
+        "type": "function",
+        "z": "c78f843c437bda5c",
+        "name": "parsing",
+        "func": "\nif(msg.properties) {\n    msg.options = msg.properties\n} else {\n    msg.options = []\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 700,
+        "y": 840,
+        "wires": [
+            [
+                "e7f70832f34cfcf9"
+            ]
+        ]
+    },
+    {
+        "id": "1db1a3e2e41246e1",
+        "type": "ui_button",
+        "z": "c78f843c437bda5c",
+        "name": "",
+        "group": "19ff0589e9dc01ae",
+        "order": 6,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "Get data",
+        "tooltip": "Request data ",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 500,
+        "y": 1100,
+        "wires": [
+            [
+                "3d4577411346d119"
+            ]
+        ]
+    },
+    {
+        "id": "1a91d3f93fdb1099",
+        "type": "comment",
+        "z": "c78f843c437bda5c",
+        "name": "UI updates",
+        "info": "",
+        "x": 320,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "57ab7ea9a37e7ece",
+        "type": "change",
+        "z": "c78f843c437bda5c",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "selectedProperty",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1050,
+        "y": 840,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "cf2808a5503b4066",
+        "type": "function",
+        "z": "c78f843c437bda5c",
+        "name": "parsing",
+        "func": "if(msg.usePut){\n    try {\n        msg.payload = JSON.parse(msg.putBody)\n        if(msg.pid) {\n            return msg;\n        } else {\n           node.warn('not selected')\n        }\n    } catch (err) {\n         node.warn('NOT JSON')\n         return [null, {payload: 'PUT body is not in JSON format'}]\n    }\n}\nelse {\n    delete msg.payload\n    if(msg.pid) {\n        return msg;\n    } else {\n       node.warn('not selected')\n        return [null, {payload: 'Please choose source, item and property'}]\n}\n}\n\n\n",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 840,
+        "y": 1100,
+        "wires": [
+            [
+                "aa1b17cff47cbc30"
+            ],
+            [
+                "351fd14c2f13c96a"
+            ]
+        ]
+    },
+    {
+        "id": "3d4577411346d119",
+        "type": "change",
+        "z": "c78f843c437bda5c",
+        "name": "get variable",
+        "rules": [
+            {
+                "t": "set",
+                "p": "pid",
+                "pt": "msg",
+                "to": "selectedProperty",
+                "tot": "flow"
+            },
+            {
+                "t": "set",
+                "p": "oid",
+                "pt": "msg",
+                "to": "oid",
+                "tot": "flow"
+            },
+            {
+                "t": "set",
+                "p": "usePut",
+                "pt": "msg",
+                "to": "usePut",
+                "tot": "flow"
+            },
+            {
+                "t": "set",
+                "p": "putBody",
+                "pt": "msg",
+                "to": "putBody",
+                "tot": "flow"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 670,
+        "y": 1100,
+        "wires": [
+            [
+                "cf2808a5503b4066"
+            ]
+        ]
+    },
+    {
+        "id": "aa1b17cff47cbc30",
+        "type": "link out",
+        "z": "c78f843c437bda5c",
+        "name": "",
+        "mode": "link",
+        "links": [
+            "ce7628616415b16c"
+        ],
+        "x": 935,
+        "y": 1080,
+        "wires": []
+    },
+    {
+        "id": "ba1314ed35175558",
+        "type": "function",
+        "z": "c78f843c437bda5c",
+        "name": "parsing",
+        "func": "if(msg.payload){\n    delete msg.responseUrl\n    delete msg.redirectList\n    delete msg.retry\n    delete msg.headers\n    msg.payload = JSON.stringify(msg.payload, null, 2);\n    return msg\n} else {\n    node.warn('Warning status code:' + msg.statusCode)\n    return [null, {payload: 'Warning status code:' + msg.statusCode}]\n}\n",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 580,
+        "y": 320,
+        "wires": [
+            [
+                "825f25f48b9646db"
+            ],
+            [
+                "7774c9880ff14319"
+            ]
+        ]
+    },
+    {
+        "id": "825f25f48b9646db",
+        "type": "change",
+        "z": "c78f843c437bda5c",
+        "name": "Store",
+        "rules": [
+            {
+                "t": "set",
+                "p": "data",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 710,
+        "y": 300,
+        "wires": [
+            [
+                "f0bf682e5a103dd1"
+            ]
+        ]
+    },
+    {
+        "id": "2bad44f804f3fb8f",
+        "type": "link in",
+        "z": "c78f843c437bda5c",
+        "name": "updateDataView",
+        "links": [
+            "f0bf682e5a103dd1"
+        ],
+        "x": 335,
+        "y": 980,
+        "wires": [
+            [
+                "ccbce6df8277f8ed"
+            ]
+        ]
+    },
+    {
+        "id": "ccbce6df8277f8ed",
+        "type": "change",
+        "z": "c78f843c437bda5c",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "data",
+                "pt": "msg",
+                "to": "data",
+                "tot": "flow"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 510,
+        "y": 1020,
+        "wires": [
+            [
+                "aca7519e497dc65f"
+            ]
+        ]
+    },
+    {
+        "id": "aca7519e497dc65f",
+        "type": "ui_template",
+        "z": "c78f843c437bda5c",
+        "group": "4dee40efc3e42c9e",
+        "name": "Data",
+        "order": 1,
+        "width": 9,
+        "height": 6,
+        "format": "<pre>{{msg.data}}</pre>\n",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 770,
+        "y": 1020,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d02019aa86b0327d",
+        "type": "ui_template",
+        "z": "c78f843c437bda5c",
+        "group": "7fe25f629f718e1f",
+        "name": "Properties",
+        "order": 1,
+        "width": 10,
+        "height": 4,
+        "format": "<h3>Properties:</h3>\n<ul>\n  <li ng-repeat=\"prop in msg.properties\">{{prop}}</li>\n \n</ul>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 790,
+        "y": 900,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f0bf682e5a103dd1",
+        "type": "link out",
+        "z": "c78f843c437bda5c",
+        "name": "",
+        "mode": "link",
+        "links": [
+            "2bad44f804f3fb8f"
+        ],
+        "x": 795,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "08c05b6008129f7a",
+        "type": "debug",
+        "z": "c78f843c437bda5c",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 770,
+        "y": 980,
+        "wires": []
+    },
+    {
+        "id": "19bb57dc3d4f8f26",
+        "type": "debug",
+        "z": "c78f843c437bda5c",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 860,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "11906826a46f2819",
+        "type": "comment",
+        "z": "c78f843c437bda5c",
+        "name": "Property selected",
+        "info": "",
+        "x": 1020,
+        "y": 800,
+        "wires": []
+    },
+    {
+        "id": "453d9b1c280d5643",
+        "type": "comment",
+        "z": "c78f843c437bda5c",
+        "name": "Update Data view",
+        "info": "",
+        "x": 530,
+        "y": 980,
+        "wires": []
+    },
+    {
+        "id": "12a5992ee036042e",
+        "type": "ui_switch",
+        "z": "c78f843c437bda5c",
+        "name": "",
+        "label": "Use PUT",
+        "tooltip": "When enabled, message body can be sent in request. Requested property needs to support this feature",
+        "group": "19ff0589e9dc01ae",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "decouple": "false",
+        "topic": "topic",
+        "topicType": "msg",
+        "style": "",
+        "onvalue": "true",
+        "onvalueType": "bool",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "false",
+        "offvalueType": "bool",
+        "officon": "",
+        "offcolor": "",
+        "animate": false,
+        "className": "",
+        "x": 500,
+        "y": 1200,
+        "wires": [
+            [
+                "a363d10cc7eed76b",
+                "4ef76db380855760"
+            ]
+        ]
+    },
+    {
+        "id": "4f820f171912b01c",
+        "type": "comment",
+        "z": "c78f843c437bda5c",
+        "name": "PUT / GET selection",
+        "info": "",
+        "x": 350,
+        "y": 1160,
+        "wires": []
+    },
+    {
+        "id": "03dee1884e76aed1",
+        "type": "ui_text_input",
+        "z": "c78f843c437bda5c",
+        "name": "",
+        "label": "PUT body",
+        "tooltip": "",
+        "group": "19ff0589e9dc01ae",
+        "order": 5,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "mode": "text",
+        "delay": 300,
+        "topic": "topic",
+        "sendOnBlur": true,
+        "className": "",
+        "topicType": "msg",
+        "x": 500,
+        "y": 1320,
+        "wires": [
+            [
+                "0d2f0c08dd4dc766"
+            ]
+        ]
+    },
+    {
+        "id": "0d2f0c08dd4dc766",
+        "type": "change",
+        "z": "c78f843c437bda5c",
+        "name": "set variable",
+        "rules": [
+            {
+                "t": "set",
+                "p": "putBody",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 650,
+        "y": 1320,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "a363d10cc7eed76b",
+        "type": "change",
+        "z": "c78f843c437bda5c",
+        "name": "set variable",
+        "rules": [
+            {
+                "t": "set",
+                "p": "usePut",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 670,
+        "y": 1200,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "252e890592b4771c",
+        "type": "change",
+        "z": "c78f843c437bda5c",
+        "name": "clear",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "false",
+                "tot": "bool"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 310,
+        "y": 1200,
+        "wires": [
+            [
+                "12a5992ee036042e"
+            ]
+        ]
+    },
+    {
+        "id": "4ef76db380855760",
+        "type": "change",
+        "z": "c78f843c437bda5c",
+        "name": "toggle",
+        "rules": [
+            {
+                "t": "set",
+                "p": "enabled",
+                "pt": "msg",
+                "to": "payload",
+                "tot": "msg"
+            },
+            {
+                "t": "delete",
+                "p": "payload",
+                "pt": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 310,
+        "y": 1280,
+        "wires": [
+            [
+                "03dee1884e76aed1"
+            ]
+        ]
+    },
+    {
+        "id": "6844483862faf6f1",
+        "type": "change",
+        "z": "c78f843c437bda5c",
+        "name": "clear",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "{}",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 310,
+        "y": 1320,
+        "wires": [
+            [
+                "03dee1884e76aed1"
+            ]
+        ]
+    },
+    {
+        "id": "9a8ccf173873d768",
+        "type": "ui_toast",
+        "z": "c78f843c437bda5c",
+        "position": "bottom left",
+        "displayTime": "5",
+        "highlight": "",
+        "sendall": true,
+        "outputs": 0,
+        "ok": "OK",
+        "cancel": "",
+        "raw": false,
+        "className": "",
+        "topic": "",
+        "name": "err notif",
+        "x": 660,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "7774c9880ff14319",
+        "type": "ui_toast",
+        "z": "c78f843c437bda5c",
+        "position": "bottom left",
+        "displayTime": "5",
+        "highlight": "",
+        "sendall": true,
+        "outputs": 0,
+        "ok": "OK",
+        "cancel": "",
+        "raw": false,
+        "className": "",
+        "topic": "",
+        "name": "err notif",
+        "x": 720,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "351fd14c2f13c96a",
+        "type": "ui_toast",
+        "z": "c78f843c437bda5c",
+        "position": "bottom left",
+        "displayTime": "5",
+        "highlight": "",
+        "sendall": true,
+        "outputs": 0,
+        "ok": "OK",
+        "cancel": "",
+        "raw": false,
+        "className": "",
+        "topic": "",
+        "name": "err notif",
+        "x": 980,
+        "y": 1120,
+        "wires": []
+    },
+    {
+        "id": "f6522d2179943646",
+        "type": "change",
+        "z": "c78f843c437bda5c",
+        "name": "clear",
+        "rules": [
+            {
+                "t": "delete",
+                "p": "td",
+                "pt": "flow"
+            },
+            {
+                "t": "delete",
+                "p": "properties",
+                "pt": "flow"
+            },
+            {
+                "t": "delete",
+                "p": "selectedProperty",
+                "pt": "flow"
+            },
+            {
+                "t": "delete",
+                "p": "data",
+                "pt": "flow"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 310,
+        "y": 900,
+        "wires": [
+            [
+                "1a2d3d94197c0761"
+            ]
+        ]
+    },
+    {
+        "id": "80121613b9dbb45a",
+        "type": "change",
+        "z": "c78f843c437bda5c",
+        "name": "clear",
+        "rules": [
+            {
+                "t": "delete",
+                "p": "td",
+                "pt": "flow"
+            },
+            {
+                "t": "delete",
+                "p": "items",
+                "pt": "flow"
+            },
+            {
+                "t": "delete",
+                "p": "item",
+                "pt": "flow"
+            },
+            {
+                "t": "delete",
+                "p": "properties",
+                "pt": "flow"
+            },
+            {
+                "t": "delete",
+                "p": "selectedProperty",
+                "pt": "flow"
+            },
+            {
+                "t": "delete",
+                "p": "data",
+                "pt": "flow"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 310,
+        "y": 760,
+        "wires": [
+            [
+                "f99fbed25d93a745"
+            ]
+        ]
+    },
+    {
+        "id": "90e7455996968c2b",
+        "type": "change",
+        "z": "c78f843c437bda5c",
+        "name": "clear",
+        "rules": [
+            {
+                "t": "delete",
+                "p": "data",
+                "pt": "flow"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 310,
+        "y": 1020,
+        "wires": [
+            [
+                "ccbce6df8277f8ed"
+            ]
+        ]
+    },
+    {
+        "id": "1ac765e0838ed47d",
+        "type": "ui_toast",
+        "z": "c78f843c437bda5c",
+        "position": "bottom left",
+        "displayTime": "10",
+        "highlight": "",
+        "sendall": true,
+        "outputs": 0,
+        "ok": "OK",
+        "cancel": "",
+        "raw": false,
+        "className": "",
+        "topic": "",
+        "name": "err notif",
+        "x": 680,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "47fe486c414b603c",
+        "type": "auroralAgent",
+        "host": "auroral-agent",
+        "port": "4000",
+        "serverPort": "1250",
+        "protocol": "http",
+        "authentification": false,
+        "ignoreCertificate": false
+    },
+    {
+        "id": "19ff0589e9dc01ae",
+        "type": "ui_group",
+        "name": "Input",
+        "tab": "0fc43f2662d3c814",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "7fe25f629f718e1f",
+        "type": "ui_group",
+        "name": "Device detail",
+        "tab": "0fc43f2662d3c814",
+        "order": 2,
+        "disp": true,
+        "width": 10,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "4dee40efc3e42c9e",
+        "type": "ui_group",
+        "name": "Result",
+        "tab": "0fc43f2662d3c814",
+        "order": 3,
+        "disp": true,
+        "width": 9,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "0fc43f2662d3c814",
+        "type": "ui_tab",
+        "name": "Consume",
+        "icon": "dashboard",
+        "order": 1,
+        "disabled": false,
+        "hidden": false
+    }
+]
