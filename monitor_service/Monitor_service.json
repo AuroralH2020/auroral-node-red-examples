@@ -1724,7 +1724,7 @@
         "proxy": "",
         "authType": "",
         "senderr": false,
-        "x": 220,
+        "x": 140,
         "y": 1620,
         "wires": [
             [
@@ -1739,11 +1739,12 @@
         "name": "",
         "events": "change",
         "x": 100,
-        "y": 1580,
+        "y": 1560,
         "wires": [
             [
                 "c32d5abb11bf98ed",
-                "858c1d5f63166004"
+                "858c1d5f63166004",
+                "a15ab0146e589c02"
             ]
         ]
     },
@@ -1768,8 +1769,8 @@
         "arraySpltType": "len",
         "stream": false,
         "addname": "",
-        "x": 270,
-        "y": 1660,
+        "x": 430,
+        "y": 1620,
         "wires": [
             [
                 "dff32e4baf5f9f61"
@@ -1787,8 +1788,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 150,
-        "y": 1660,
+        "x": 310,
+        "y": 1620,
         "wires": [
             [
                 "aaabb19140919135"
@@ -1809,8 +1810,8 @@
         "proxy": "",
         "authType": "",
         "senderr": false,
-        "x": 550,
-        "y": 1660,
+        "x": 530,
+        "y": 1560,
         "wires": [
             [
                 "122725fbdebba9b5"
@@ -1821,7 +1822,7 @@
         "id": "858c1d5f63166004",
         "type": "change",
         "z": "c78f843c437bda5c",
-        "name": "Delete",
+        "name": "Init",
         "rules": [
             {
                 "t": "set",
@@ -1850,6 +1851,13 @@
                 "pt": "flow",
                 "to": "",
                 "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "selectedMode",
+                "pt": "flow",
+                "to": "partner",
+                "tot": "str"
             }
         ],
         "action": "",
@@ -1857,7 +1865,7 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 250,
+        "x": 270,
         "y": 1560,
         "wires": [
             [
@@ -1870,17 +1878,17 @@
         "type": "function",
         "z": "c78f843c437bda5c",
         "name": "Parse",
-        "func": "if (msg.statusCode === 200) {\n    msg.payload = msg.payload.message\n    msg.payload.cid = msg.cid\n    return msg\n} else {\n    //node.warn('Status code: ' + msg.statusCode)\n    msg.payload= []\n    return msg\n}\n",
+        "func": "if (msg.statusCode === 200) {\n    msg.partner.name = msg.payload.message.name\n    return msg\n} else {\n    //node.warn('Status code: ' + msg.statusCode)\n    msg.payload= {}\n    return msg\n}\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 730,
-        "y": 1660,
+        "x": 710,
+        "y": 1560,
         "wires": [
             [
-                "3ebbbb3b100a783e"
+                "75e4f3782ecae0c1"
             ]
         ]
     },
@@ -1904,8 +1912,8 @@
         "reduceInit": "",
         "reduceInitType": "",
         "reduceFixup": "",
-        "x": 850,
-        "y": 1660,
+        "x": 730,
+        "y": 1640,
         "wires": [
             [
                 "c2bf44be76199f19"
@@ -1917,14 +1925,14 @@
         "type": "function",
         "z": "c78f843c437bda5c",
         "name": "Parse",
-        "func": "\nmsg.partners = msg.payload.filter(partner => {\n  if (Object.keys(partner).length !== 0) {\n    return true;\n  }\n  return false;\n});\n\n\nmsg.options = []\n for(const partner of msg.partners){\n        const obj = {}\n        obj[partner.name] = partner.cid\n        msg.options.push(obj)\n    }\n\nreturn msg",
+        "func": "\nmsg.partners = msg.payload.filter(partner => {\n  return partner.name ? true : false\n});\n\n\nmsg.options = []\n for(const partner of msg.partners){\n        const obj = {}\n        obj[partner.name] = partner.cid\n        msg.options.push(obj)\n    }\n\nreturn msg",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 970,
-        "y": 1660,
+        "x": 850,
+        "y": 1640,
         "wires": [
             [
                 "baf5c976a23c66d0"
@@ -1950,8 +1958,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 620,
-        "y": 1720,
+        "x": 1320,
+        "y": 1640,
         "wires": [
             []
         ]
@@ -1965,7 +1973,7 @@
         "tooltip": "",
         "place": "Select option",
         "group": "69d7ea2138e75f9b",
-        "order": 1,
+        "order": 2,
         "width": 0,
         "height": 0,
         "passthru": true,
@@ -2003,8 +2011,8 @@
         "proxy": "",
         "authType": "",
         "senderr": false,
-        "x": 230,
-        "y": 1700,
+        "x": 1010,
+        "y": 1640,
         "wires": [
             [
                 "33e87d454631066f"
@@ -2016,14 +2024,14 @@
         "type": "function",
         "z": "c78f843c437bda5c",
         "name": "Parse",
-        "func": "if (msg.statusCode === 200) {\n    const nodes = []\n    \n    msg.payload.message.forEach(n => {\n        nodes.push(n.agid)\n    });\n    \n    let cid = 'my org cid'\n    if(msg.payload.message.length > 0) {\n        cid = msg.payload.message[0].cid\n    } \n    msg.options.push({'my organisation': cid})\n    msg.partners.push({name: 'my organisation', nodes, cid})\n    return msg\n} else {\n    node.warn('Status code: ' + msg.statusCode)\n    \n}\n",
+        "func": "if (msg.statusCode === 200) {\n    const nodes = []\n    \n    msg.payload.message.forEach(n => {\n        nodes.push(n.agid)\n    });\n    \n    let cid = 'my org cid'\n    if(msg.payload.message.length > 0) {\n        cid = msg.payload.message[0].cid\n    } \n    msg.options.unshift({'My organisation': cid})\n    msg.partners.unshift({name: 'My organisation', nodes, cid})\n    return msg\n} else {\n    node.warn('Status code: ' + msg.statusCode)\n    \n}\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 430,
-        "y": 1760,
+        "x": 1170,
+        "y": 1640,
         "wires": [
             [
                 "5545a031a76c0644",
@@ -2036,14 +2044,14 @@
         "type": "function",
         "z": "c78f843c437bda5c",
         "name": "Parse",
-        "func": "msg.cid = msg.payload\nreturn msg",
+        "func": "msg.partner = { cid: msg.payload, nodes: []}\nreturn msg",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 390,
-        "y": 1660,
+        "x": 550,
+        "y": 1620,
         "wires": [
             [
                 "090d98a624b349e8"
@@ -2063,8 +2071,8 @@
         "format": "{{msg.cid}}",
         "layout": "row-spread",
         "className": "",
-        "x": 410,
-        "y": 1860,
+        "x": 370,
+        "y": 1820,
         "wires": []
     },
     {
@@ -2080,8 +2088,8 @@
         "format": "{{msg.agid}}",
         "layout": "row-spread",
         "className": "",
-        "x": 410,
-        "y": 1900,
+        "x": 370,
+        "y": 1860,
         "wires": []
     },
     {
@@ -2131,10 +2139,13 @@
         "name": "",
         "mode": "link",
         "links": [
-            "5324084eaf1fdf2d"
+            "5324084eaf1fdf2d",
+            "fdc5d41ff0dcc42e",
+            "e7603f0552b9f7e3",
+            "875a4c9065e26984"
         ],
-        "x": 905,
-        "y": 1760,
+        "x": 925,
+        "y": 1720,
         "wires": []
     },
     {
@@ -2145,8 +2156,8 @@
         "links": [
             "21158a39b227fae6",
             "b83fcebdac3b1bba",
-            "3a6c54c6eb610f16",
-            "848b4913ed0f3307"
+            "848b4913ed0f3307",
+            "4ccfb03aae30696d"
         ],
         "x": 55,
         "y": 1880,
@@ -2160,7 +2171,7 @@
         "id": "b317be16fff8c2f5",
         "type": "change",
         "z": "c78f843c437bda5c",
-        "name": "",
+        "name": "Get",
         "rules": [
             {
                 "t": "set",
@@ -2189,7 +2200,7 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 200,
+        "x": 170,
         "y": 1880,
         "wires": [
             [
@@ -2208,7 +2219,7 @@
         "tooltip": "",
         "place": "Select option",
         "group": "69d7ea2138e75f9b",
-        "order": 2,
+        "order": 4,
         "width": 0,
         "height": 0,
         "passthru": true,
@@ -2224,8 +2235,8 @@
         "topic": "topic",
         "topicType": "msg",
         "className": "",
-        "x": 910,
-        "y": 1820,
+        "x": 1230,
+        "y": 1760,
         "wires": [
             [
                 "4a4c3feefb284428"
@@ -2237,14 +2248,14 @@
         "type": "function",
         "z": "c78f843c437bda5c",
         "name": "Parse",
-        "func": "msg.options = []\n\nmsg.partners.forEach(partner => {\n    if(partner.cid == msg.payload){\n        msg.options = partner.nodes\n    }\n})\nreturn msg",
+        "func": "msg.options = []\nif(msg.partners) {\n   msg.partners.forEach(partner => {\n    if(partner.cid == msg.payload){\n        msg.options = partner.nodes\n    }\n}) \n} else {\n    msg.options = []\n}\n\nreturn msg",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 790,
-        "y": 1820,
+        "x": 1070,
+        "y": 1760,
         "wires": [
             [
                 "b061711ed2875f1e"
@@ -2255,7 +2266,7 @@
         "id": "4a4c3feefb284428",
         "type": "change",
         "z": "c78f843c437bda5c",
-        "name": "selected cid",
+        "name": "selected AGID",
         "rules": [
             {
                 "t": "set",
@@ -2270,8 +2281,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 810,
-        "y": 1880,
+        "x": 1380,
+        "y": 1720,
         "wires": [
             [
                 "b83fcebdac3b1bba"
@@ -2285,10 +2296,13 @@
         "name": "",
         "mode": "link",
         "links": [
-            "5324084eaf1fdf2d"
+            "5324084eaf1fdf2d",
+            "fdc5d41ff0dcc42e",
+            "e7603f0552b9f7e3",
+            "875a4c9065e26984"
         ],
-        "x": 925,
-        "y": 1880,
+        "x": 1495,
+        "y": 1720,
         "wires": []
     },
     {
@@ -2298,7 +2312,8 @@
         "name": "",
         "mode": "link",
         "links": [
-            "5324084eaf1fdf2d"
+            "5324084eaf1fdf2d",
+            "fdc5d41ff0dcc42e"
         ],
         "x": 355,
         "y": 1560,
@@ -2310,7 +2325,7 @@
         "z": "c78f843c437bda5c",
         "name": "",
         "group": "69d7ea2138e75f9b",
-        "order": 5,
+        "order": 7,
         "width": 0,
         "height": 0,
         "passthru": false,
@@ -2325,7 +2340,7 @@
         "topic": "topic",
         "topicType": "msg",
         "x": 210,
-        "y": 2200,
+        "y": 2300,
         "wires": [
             [
                 "eae372f27fe0d255"
@@ -2337,14 +2352,14 @@
         "type": "function",
         "z": "c78f843c437bda5c",
         "name": "Parse",
-        "func": "if(msg.SPARQL && msg.cid && msg.agid){\n    msg.payload = msg.SPARQL\n    msg.headers = {'Content-Type': 'text/plain'}\n    return msg\n} else {\n    return [null, {payload: 'Please specify partner, node and SPARQL'}]\n}",
+        "func": "if(msg.SPARQL && msg.agid){\n    msg.payload = msg.SPARQL\n    msg.headers = {'Content-Type': 'text/plain'}\n    return msg\n} else {\n    return [null, {payload: 'Please specify partner, node and SPARQL'}]\n}",
         "outputs": 2,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
         "x": 530,
-        "y": 2200,
+        "y": 2300,
         "wires": [
             [
                 "a0d128d84397f157"
@@ -2388,7 +2403,7 @@
         "to": "",
         "reg": false,
         "x": 370,
-        "y": 2200,
+        "y": 2300,
         "wires": [
             [
                 "7bbcf456c425af48"
@@ -2410,7 +2425,7 @@
         "authType": "",
         "senderr": false,
         "x": 740,
-        "y": 2080,
+        "y": 2280,
         "wires": [
             [
                 "bd5f8d7b825d5fd6"
@@ -2436,8 +2451,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 860,
-        "y": 2140,
+        "x": 1100,
+        "y": 2220,
         "wires": [
             [
                 "848b4913ed0f3307"
@@ -2449,17 +2464,20 @@
         "type": "function",
         "z": "c78f843c437bda5c",
         "name": "Parse",
-        "func": "if(msg.payload.message){\n    if(typeof msg.payload.message  === 'object'){\n        msg.payload.message = JSON.stringify(msg.payload.message, null, 2);\n    }\n    return msg\n}",
-        "outputs": 1,
+        "func": "if(msg.statusCode === 200){\n    if(msg.payload.message){\n    if(typeof msg.payload.message  === 'object'){\n        msg.payload.message = JSON.stringify(msg.payload.message, null, 2);\n    }\n    return msg\n}\n} else {\n    return [null, {payload: 'Node is not reachable'}]\n}\n",
+        "outputs": 2,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 690,
-        "y": 2140,
+        "x": 930,
+        "y": 2280,
         "wires": [
             [
                 "f9a6d9642cf5cd8c"
+            ],
+            [
+                "e49aff9677ffe86f"
             ]
         ]
     },
@@ -2470,10 +2488,13 @@
         "name": "",
         "mode": "link",
         "links": [
-            "5324084eaf1fdf2d"
+            "5324084eaf1fdf2d",
+            "fdc5d41ff0dcc42e",
+            "e7603f0552b9f7e3",
+            "875a4c9065e26984"
         ],
-        "x": 995,
-        "y": 2140,
+        "x": 1225,
+        "y": 2220,
         "wires": []
     },
     {
@@ -2482,7 +2503,7 @@
         "z": "c78f843c437bda5c",
         "group": "69d7ea2138e75f9b",
         "name": "SPARQL ",
-        "order": 4,
+        "order": 6,
         "width": 0,
         "height": 0,
         "format": "\n<textarea id='textArea' placeholder=\"Specify your SPARQL here\" ng-model=\"msg.payload\"  ng-change=\"send(msg)\"  cols=\"40\" rows=\"8\">\n</textarea>",
@@ -2491,8 +2512,8 @@
         "resendOnRefresh": true,
         "templateScope": "local",
         "className": "",
-        "x": 560,
-        "y": 2040,
+        "x": 680,
+        "y": 2180,
         "wires": [
             [
                 "febfb34b3433db43"
@@ -2518,8 +2539,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 690,
-        "y": 2040,
+        "x": 830,
+        "y": 2180,
         "wires": [
             []
         ]
@@ -2531,7 +2552,7 @@
         "name": "",
         "events": "change",
         "x": 80,
-        "y": 2060,
+        "y": 2160,
         "wires": [
             [
                 "1208ab0d4da06801",
@@ -2559,7 +2580,7 @@
         "to": "",
         "reg": false,
         "x": 260,
-        "y": 2080,
+        "y": 2180,
         "wires": [
             [
                 "e7db45ea7c5e9876"
@@ -2575,14 +2596,14 @@
         "order": 3,
         "width": 14,
         "height": 7,
-        "format": "<div>\n    <h4>SPARQL:</h4>\n    <pre>{{msg.SPARQL}}</pre>\n</div>",
+        "format": "<div>\n    <h4>Query result:</h4>\n    <pre>{{msg.SPARQL}}</pre>\n</div>",
         "storeOutMessages": true,
         "fwdInMessages": true,
         "resendOnRefresh": true,
         "templateScope": "local",
         "className": "",
-        "x": 400,
-        "y": 1940,
+        "x": 380,
+        "y": 1900,
         "wires": [
             []
         ]
@@ -2603,7 +2624,7 @@
         "topic": "",
         "name": "err notif",
         "x": 680,
-        "y": 2200,
+        "y": 2340,
         "wires": []
     },
     {
@@ -2615,7 +2636,7 @@
         "tooltip": "",
         "place": "Select option",
         "group": "69d7ea2138e75f9b",
-        "order": 3,
+        "order": 5,
         "width": 0,
         "height": 0,
         "passthru": false,
@@ -2625,8 +2646,8 @@
         "topic": "topic",
         "topicType": "msg",
         "className": "",
-        "x": 420,
-        "y": 1980,
+        "x": 600,
+        "y": 2080,
         "wires": [
             [
                 "e7db45ea7c5e9876"
@@ -2652,8 +2673,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 210,
-        "y": 1980,
+        "x": 390,
+        "y": 2080,
         "wires": [
             [
                 "3d2b767c5cd21d1f"
@@ -2671,11 +2692,561 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 70,
-        "y": 1980,
+        "x": 250,
+        "y": 2080,
         "wires": [
             [
                 "d8a9dcfdb4a761d9"
+            ]
+        ]
+    },
+    {
+        "id": "68c9a4f5531c4d6c",
+        "type": "ui_ui_control",
+        "z": "c78f843c437bda5c",
+        "name": "",
+        "events": "change",
+        "x": 940,
+        "y": 1800,
+        "wires": [
+            [
+                "2792c19fc72785b8"
+            ]
+        ]
+    },
+    {
+        "id": "e49aff9677ffe86f",
+        "type": "ui_toast",
+        "z": "c78f843c437bda5c",
+        "position": "bottom left",
+        "displayTime": "5",
+        "highlight": "",
+        "sendall": true,
+        "outputs": 0,
+        "ok": "OK",
+        "cancel": "",
+        "raw": false,
+        "className": "",
+        "topic": "",
+        "name": "err notif",
+        "x": 1080,
+        "y": 2280,
+        "wires": []
+    },
+    {
+        "id": "18b49201a7737ecc",
+        "type": "http request",
+        "z": "c78f843c437bda5c",
+        "name": "Get partner nodes",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://auroral-agent:4000/api/discovery/nodes/organisation/{{partner.cid}}",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 1010,
+        "y": 1560,
+        "wires": [
+            [
+                "7e8d950a3cf703ea"
+            ]
+        ]
+    },
+    {
+        "id": "7e8d950a3cf703ea",
+        "type": "function",
+        "z": "c78f843c437bda5c",
+        "name": "Parse",
+        "func": "if (msg.statusCode === 200) {\n    msg.payload.message.forEach(node =>{\n        msg.partner.nodes.push(node.agid)\n    })\n    \n} \nmsg.payload= msg.partner\nreturn msg\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1170,
+        "y": 1560,
+        "wires": [
+            [
+                "3ebbbb3b100a783e"
+            ]
+        ]
+    },
+    {
+        "id": "75e4f3782ecae0c1",
+        "type": "switch",
+        "z": "c78f843c437bda5c",
+        "name": "",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "nnull"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 830,
+        "y": 1560,
+        "wires": [
+            [
+                "18b49201a7737ecc"
+            ],
+            [
+                "3ebbbb3b100a783e"
+            ]
+        ]
+    },
+    {
+        "id": "f706960487858ad7",
+        "type": "ui_dropdown",
+        "z": "c78f843c437bda5c",
+        "name": "",
+        "label": "Community:",
+        "tooltip": "",
+        "place": "Select community",
+        "group": "69d7ea2138e75f9b",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "multiple": false,
+        "options": [
+            {
+                "label": "",
+                "value": "",
+                "type": "str"
+            }
+        ],
+        "payload": "",
+        "topic": "topic",
+        "topicType": "msg",
+        "className": "",
+        "x": 1030,
+        "y": 1920,
+        "wires": [
+            [
+                "273bf2100786e21e"
+            ]
+        ]
+    },
+    {
+        "id": "d0941526d598e387",
+        "type": "ui_switch",
+        "z": "c78f843c437bda5c",
+        "name": "",
+        "label": "Community / Partner: ",
+        "tooltip": "",
+        "group": "69d7ea2138e75f9b",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "decouple": "false",
+        "topic": "topic",
+        "topicType": "msg",
+        "style": "",
+        "onvalue": "partner",
+        "onvalueType": "str",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "community",
+        "offvalueType": "str",
+        "officon": "",
+        "offcolor": "",
+        "animate": false,
+        "className": "",
+        "x": 440,
+        "y": 1980,
+        "wires": [
+            [
+                "2f10e25674f8cd81",
+                "7a488604378a3660"
+            ]
+        ]
+    },
+    {
+        "id": "2f10e25674f8cd81",
+        "type": "change",
+        "z": "c78f843c437bda5c",
+        "name": "store",
+        "rules": [
+            {
+                "t": "set",
+                "p": "selectedMode",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 550,
+        "y": 1900,
+        "wires": [
+            [
+                "433fd4c0c2d246bf"
+            ]
+        ]
+    },
+    {
+        "id": "2ea6fc852b9e6dfd",
+        "type": "function",
+        "z": "c78f843c437bda5c",
+        "name": "Switch",
+        "func": "if(msg.payload === 'community'){\n    return [{enabled: false, payload: 0}, {enabled: true} ]\n} else {\n    return [{enabled: true}, {enabled: false, payload: 0} ]\n}\nreturn msg;",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 790,
+        "y": 1900,
+        "wires": [
+            [
+                "5545a031a76c0644"
+            ],
+            [
+                "f706960487858ad7"
+            ]
+        ]
+    },
+    {
+        "id": "433fd4c0c2d246bf",
+        "type": "change",
+        "z": "c78f843c437bda5c",
+        "name": "get ",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "selectedMode",
+                "tot": "flow"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 670,
+        "y": 1900,
+        "wires": [
+            [
+                "2ea6fc852b9e6dfd"
+            ]
+        ]
+    },
+    {
+        "id": "ade7cefc659461bc",
+        "type": "change",
+        "z": "c78f843c437bda5c",
+        "name": "get ",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "selectedMode",
+                "tot": "flow"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 250,
+        "y": 1980,
+        "wires": [
+            [
+                "d0941526d598e387"
+            ]
+        ]
+    },
+    {
+        "id": "a15ab0146e589c02",
+        "type": "http request",
+        "z": "c78f843c437bda5c",
+        "name": "Get myOrg communities",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://auroral-agent:4000/api/collaboration/communities",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 150,
+        "y": 1720,
+        "wires": [
+            [
+                "46f7cc27bd9c8800"
+            ]
+        ]
+    },
+    {
+        "id": "46f7cc27bd9c8800",
+        "type": "function",
+        "z": "c78f843c437bda5c",
+        "name": "Parse",
+        "func": "if (msg.statusCode === 200) {\n    msg.payload = msg.payload.message\n    msg.communities = msg.payload.message\n   \n    return msg;\n} else {\n     node.warn('Status code:' + msg.statusCode)\n}\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 330,
+        "y": 1720,
+        "wires": [
+            [
+                "f2fcb641f9471c6c"
+            ]
+        ]
+    },
+    {
+        "id": "f2fcb641f9471c6c",
+        "type": "change",
+        "z": "c78f843c437bda5c",
+        "name": "Store",
+        "rules": [
+            {
+                "t": "set",
+                "p": "communities",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 450,
+        "y": 1720,
+        "wires": [
+            [
+                "d7c2e955ddb503d5"
+            ]
+        ]
+    },
+    {
+        "id": "e577529d33da1c28",
+        "type": "change",
+        "z": "c78f843c437bda5c",
+        "name": "get ",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "communities",
+                "tot": "flow"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 950,
+        "y": 1980,
+        "wires": [
+            [
+                "e07066816a484b3f"
+            ]
+        ]
+    },
+    {
+        "id": "e07066816a484b3f",
+        "type": "function",
+        "z": "c78f843c437bda5c",
+        "name": "parse",
+        "func": "msg.options = []\nmsg.payload.forEach(com => {\n    const obj = {}\n    obj[com.name] = com.commId\n    msg.options.push(obj)\n})\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1070,
+        "y": 1980,
+        "wires": [
+            [
+                "f706960487858ad7"
+            ]
+        ]
+    },
+    {
+        "id": "273bf2100786e21e",
+        "type": "http request",
+        "z": "c78f843c437bda5c",
+        "name": "Get community detail",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://auroral-agent:4000/api/discovery/nodes/community/{{payload}}",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 1120,
+        "y": 1880,
+        "wires": [
+            [
+                "a071f4f3ec985fac"
+            ]
+        ]
+    },
+    {
+        "id": "a071f4f3ec985fac",
+        "type": "function",
+        "z": "c78f843c437bda5c",
+        "name": "Parse",
+        "func": "if(msg.statusCode == 200) {\n  msg.options = []\n  msg.nodes = msg.payload.message\n  msg.nodes.forEach(node => {\n     msg.options.push(node.agid)\n  })\n return msg\n}\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1290,
+        "y": 1880,
+        "wires": [
+            [
+                "b061711ed2875f1e"
+            ]
+        ]
+    },
+    {
+        "id": "d7c2e955ddb503d5",
+        "type": "link out",
+        "z": "c78f843c437bda5c",
+        "name": "",
+        "mode": "link",
+        "links": [
+            "b32a39a54c4419f3"
+        ],
+        "x": 545,
+        "y": 1720,
+        "wires": []
+    },
+    {
+        "id": "b32a39a54c4419f3",
+        "type": "link in",
+        "z": "c78f843c437bda5c",
+        "name": "Update communities list",
+        "links": [
+            "d7c2e955ddb503d5"
+        ],
+        "x": 855,
+        "y": 1980,
+        "wires": [
+            [
+                "e577529d33da1c28"
+            ]
+        ]
+    },
+    {
+        "id": "4ccfb03aae30696d",
+        "type": "link out",
+        "z": "c78f843c437bda5c",
+        "name": "",
+        "mode": "link",
+        "links": [
+            "5324084eaf1fdf2d",
+            "bac8dc338471c0cd"
+        ],
+        "x": 745,
+        "y": 2020,
+        "wires": []
+    },
+    {
+        "id": "7a488604378a3660",
+        "type": "change",
+        "z": "c78f843c437bda5c",
+        "name": "clear",
+        "rules": [
+            {
+                "t": "set",
+                "p": "selectedAgid",
+                "pt": "flow",
+                "to": "",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "selectedCid",
+                "pt": "flow",
+                "to": "",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "resultSPARQL",
+                "pt": "msg",
+                "to": "",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "options",
+                "pt": "msg",
+                "to": "[]",
+                "tot": "json"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 610,
+        "y": 2020,
+        "wires": [
+            [
+                "4ccfb03aae30696d"
+            ]
+        ]
+    },
+    {
+        "id": "3f50189abd31f52b",
+        "type": "ui_ui_control",
+        "z": "c78f843c437bda5c",
+        "name": "",
+        "events": "change",
+        "x": 120,
+        "y": 1980,
+        "wires": [
+            [
+                "ade7cefc659461bc"
+            ]
+        ]
+    },
+    {
+        "id": "bac8dc338471c0cd",
+        "type": "link in",
+        "z": "c78f843c437bda5c",
+        "name": "Update nodes",
+        "links": [
+            "4ccfb03aae30696d"
+        ],
+        "x": 1105,
+        "y": 1800,
+        "wires": [
+            [
+                "b061711ed2875f1e"
             ]
         ]
     },
