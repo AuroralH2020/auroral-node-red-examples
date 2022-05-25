@@ -76,7 +76,7 @@
         "name": "",
         "agent": "47fe486c414b603c",
         "pids": "PID1",
-        "x": 310,
+        "x": 290,
         "y": 100,
         "wires": [
             [
@@ -96,7 +96,7 @@
         "onceDelay": 0.1,
         "topic": "",
         "x": 130,
-        "y": 40,
+        "y": 60,
         "wires": [
             [
                 "4874ea03920fd755"
@@ -286,7 +286,7 @@
         "type": "function",
         "z": "c78f843c437bda5c",
         "name": "parsing",
-        "func": "if(msg.statusCode === 200){\n    if(msg.payload.message.message){\n        msg.payload = msg.payload.message.message\n    } else {\n        msg.payload = msg.payload.message\n    }\n    delete msg.responseUrl\n    delete msg.redirectList\n    delete msg.retry\n    delete msg.headers\n    return msg;\n} else {\n    node.warn('Warning status code:' + msg.statusCode)\n    return [null,{payload: 'Warning status code:' + msg.statusCode}]\n}\n",
+        "func": "if(msg.statusCode === 200){\n    if(msg.payload.message.message){\n        msg.payload = msg.payload.message.message\n    } else {\n        msg.payload = msg.payload.message\n    }\n    delete msg.responseUrl\n    delete msg.redirectList\n    delete msg.retry\n    delete msg.headers\n    return msg;\n} else {\n    node.warn('Warning status code:' + msg.statusCode)\n    node.warn(msg)\n    return [null,{payload: 'Warning status code:' + msg.statusCode}]\n}\n",
         "outputs": 2,
         "noerr": 0,
         "initialize": "",
@@ -1706,9 +1706,978 @@
         "className": "",
         "topic": "",
         "name": "err notif",
-        "x": 680,
+        "x": 700,
         "y": 100,
         "wires": []
+    },
+    {
+        "id": "c32d5abb11bf98ed",
+        "type": "http request",
+        "z": "c78f843c437bda5c",
+        "name": "Get myOrg partners",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://auroral-agent:4000/api/collaboration/partners",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 220,
+        "y": 1620,
+        "wires": [
+            [
+                "991abe983a96f1b6"
+            ]
+        ]
+    },
+    {
+        "id": "19c7fc9fcfc60d71",
+        "type": "ui_ui_control",
+        "z": "c78f843c437bda5c",
+        "name": "",
+        "events": "change",
+        "x": 100,
+        "y": 1580,
+        "wires": [
+            [
+                "c32d5abb11bf98ed",
+                "858c1d5f63166004"
+            ]
+        ]
+    },
+    {
+        "id": "27803d7ddfef49c0",
+        "type": "comment",
+        "z": "c78f843c437bda5c",
+        "name": "DISCOVERY",
+        "info": "",
+        "x": 90,
+        "y": 1480,
+        "wires": []
+    },
+    {
+        "id": "aaabb19140919135",
+        "type": "split",
+        "z": "c78f843c437bda5c",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 270,
+        "y": 1660,
+        "wires": [
+            [
+                "dff32e4baf5f9f61"
+            ]
+        ]
+    },
+    {
+        "id": "991abe983a96f1b6",
+        "type": "function",
+        "z": "c78f843c437bda5c",
+        "name": "Parse",
+        "func": "if (msg.statusCode === 200) {\n    msg.payload = msg.payload.message\n   \n    return msg;\n} else {\n     node.warn('Status code:' + msg.statusCode)\n}\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 150,
+        "y": 1660,
+        "wires": [
+            [
+                "aaabb19140919135"
+            ]
+        ]
+    },
+    {
+        "id": "090d98a624b349e8",
+        "type": "http request",
+        "z": "c78f843c437bda5c",
+        "name": "Get partner details",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://auroral-agent:4000/api/collaboration/partners/{{payload}}",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 550,
+        "y": 1660,
+        "wires": [
+            [
+                "122725fbdebba9b5"
+            ]
+        ]
+    },
+    {
+        "id": "858c1d5f63166004",
+        "type": "change",
+        "z": "c78f843c437bda5c",
+        "name": "Delete",
+        "rules": [
+            {
+                "t": "set",
+                "p": "partners",
+                "pt": "flow",
+                "to": "[]",
+                "tot": "json"
+            },
+            {
+                "t": "set",
+                "p": "selectedAgid",
+                "pt": "flow",
+                "to": "",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "selectedCid",
+                "pt": "flow",
+                "to": "",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "resultSPARQL",
+                "pt": "flow",
+                "to": "",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 250,
+        "y": 1560,
+        "wires": [
+            [
+                "3a6c54c6eb610f16"
+            ]
+        ]
+    },
+    {
+        "id": "122725fbdebba9b5",
+        "type": "function",
+        "z": "c78f843c437bda5c",
+        "name": "Parse",
+        "func": "if (msg.statusCode === 200) {\n    msg.payload = msg.payload.message\n    msg.payload.cid = msg.cid\n    return msg\n} else {\n    //node.warn('Status code: ' + msg.statusCode)\n    msg.payload= []\n    return msg\n}\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 730,
+        "y": 1660,
+        "wires": [
+            [
+                "3ebbbb3b100a783e"
+            ]
+        ]
+    },
+    {
+        "id": "3ebbbb3b100a783e",
+        "type": "join",
+        "z": "c78f843c437bda5c",
+        "name": "",
+        "mode": "custom",
+        "build": "array",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "",
+        "count": "",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 850,
+        "y": 1660,
+        "wires": [
+            [
+                "c2bf44be76199f19"
+            ]
+        ]
+    },
+    {
+        "id": "c2bf44be76199f19",
+        "type": "function",
+        "z": "c78f843c437bda5c",
+        "name": "Parse",
+        "func": "\nmsg.partners = msg.payload.filter(partner => {\n  if (Object.keys(partner).length !== 0) {\n    return true;\n  }\n  return false;\n});\n\n\nmsg.options = []\n for(const partner of msg.partners){\n        const obj = {}\n        obj[partner.name] = partner.cid\n        msg.options.push(obj)\n    }\n\nreturn msg",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 970,
+        "y": 1660,
+        "wires": [
+            [
+                "baf5c976a23c66d0"
+            ]
+        ]
+    },
+    {
+        "id": "12eb3019175f81d2",
+        "type": "change",
+        "z": "c78f843c437bda5c",
+        "name": "Store partners",
+        "rules": [
+            {
+                "t": "set",
+                "p": "partners",
+                "pt": "flow",
+                "to": "partners",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 620,
+        "y": 1720,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "5545a031a76c0644",
+        "type": "ui_dropdown",
+        "z": "c78f843c437bda5c",
+        "name": "",
+        "label": "Partner:",
+        "tooltip": "",
+        "place": "Select option",
+        "group": "69d7ea2138e75f9b",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "multiple": false,
+        "options": [
+            {
+                "label": "",
+                "value": "",
+                "type": "str"
+            }
+        ],
+        "payload": "",
+        "topic": "topic",
+        "topicType": "msg",
+        "className": "",
+        "x": 620,
+        "y": 1760,
+        "wires": [
+            [
+                "d641b15ee8ee3d18"
+            ]
+        ]
+    },
+    {
+        "id": "baf5c976a23c66d0",
+        "type": "http request",
+        "z": "c78f843c437bda5c",
+        "name": "Get myOrg nodes",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://auroral-agent:4000/api/discovery/nodes/organisation",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 230,
+        "y": 1700,
+        "wires": [
+            [
+                "33e87d454631066f"
+            ]
+        ]
+    },
+    {
+        "id": "33e87d454631066f",
+        "type": "function",
+        "z": "c78f843c437bda5c",
+        "name": "Parse",
+        "func": "if (msg.statusCode === 200) {\n    const nodes = []\n    \n    msg.payload.message.forEach(n => {\n        nodes.push(n.agid)\n    });\n    \n    let cid = 'my org cid'\n    if(msg.payload.message.length > 0) {\n        cid = msg.payload.message[0].cid\n    } \n    msg.options.push({'my organisation': cid})\n    msg.partners.push({name: 'my organisation', nodes, cid})\n    return msg\n} else {\n    node.warn('Status code: ' + msg.statusCode)\n    \n}\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 1760,
+        "wires": [
+            [
+                "5545a031a76c0644",
+                "12eb3019175f81d2"
+            ]
+        ]
+    },
+    {
+        "id": "dff32e4baf5f9f61",
+        "type": "function",
+        "z": "c78f843c437bda5c",
+        "name": "Parse",
+        "func": "msg.cid = msg.payload\nreturn msg",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 390,
+        "y": 1660,
+        "wires": [
+            [
+                "090d98a624b349e8"
+            ]
+        ]
+    },
+    {
+        "id": "87195c27d2bbf6a5",
+        "type": "ui_text",
+        "z": "c78f843c437bda5c",
+        "group": "0f99c8ea07436709",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "CID:",
+        "format": "{{msg.cid}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 410,
+        "y": 1860,
+        "wires": []
+    },
+    {
+        "id": "58c378efa6b485fd",
+        "type": "ui_text",
+        "z": "c78f843c437bda5c",
+        "group": "0f99c8ea07436709",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "AGID:",
+        "format": "{{msg.agid}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 410,
+        "y": 1900,
+        "wires": []
+    },
+    {
+        "id": "d641b15ee8ee3d18",
+        "type": "change",
+        "z": "c78f843c437bda5c",
+        "name": "selected cid",
+        "rules": [
+            {
+                "t": "set",
+                "p": "selectedCid",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "partners",
+                "pt": "msg",
+                "to": "partners",
+                "tot": "flow"
+            },
+            {
+                "t": "delete",
+                "p": "selectedAgid",
+                "pt": "flow"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 790,
+        "y": 1760,
+        "wires": [
+            [
+                "21158a39b227fae6",
+                "2792c19fc72785b8"
+            ]
+        ]
+    },
+    {
+        "id": "21158a39b227fae6",
+        "type": "link out",
+        "z": "c78f843c437bda5c",
+        "name": "",
+        "mode": "link",
+        "links": [
+            "5324084eaf1fdf2d"
+        ],
+        "x": 905,
+        "y": 1760,
+        "wires": []
+    },
+    {
+        "id": "5324084eaf1fdf2d",
+        "type": "link in",
+        "z": "c78f843c437bda5c",
+        "name": "Update discovery UI",
+        "links": [
+            "21158a39b227fae6",
+            "b83fcebdac3b1bba",
+            "3a6c54c6eb610f16",
+            "848b4913ed0f3307"
+        ],
+        "x": 55,
+        "y": 1880,
+        "wires": [
+            [
+                "b317be16fff8c2f5"
+            ]
+        ]
+    },
+    {
+        "id": "b317be16fff8c2f5",
+        "type": "change",
+        "z": "c78f843c437bda5c",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "cid",
+                "pt": "msg",
+                "to": "selectedCid",
+                "tot": "flow"
+            },
+            {
+                "t": "set",
+                "p": "agid",
+                "pt": "msg",
+                "to": "selectedAgid",
+                "tot": "flow"
+            },
+            {
+                "t": "set",
+                "p": "SPARQL",
+                "pt": "msg",
+                "to": "resultSPARQL",
+                "tot": "flow"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 200,
+        "y": 1880,
+        "wires": [
+            [
+                "87195c27d2bbf6a5",
+                "58c378efa6b485fd",
+                "3ed8760f953416f4"
+            ]
+        ]
+    },
+    {
+        "id": "b061711ed2875f1e",
+        "type": "ui_dropdown",
+        "z": "c78f843c437bda5c",
+        "name": "",
+        "label": "Node:",
+        "tooltip": "",
+        "place": "Select option",
+        "group": "69d7ea2138e75f9b",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "multiple": false,
+        "options": [
+            {
+                "label": "",
+                "value": "",
+                "type": "str"
+            }
+        ],
+        "payload": "",
+        "topic": "topic",
+        "topicType": "msg",
+        "className": "",
+        "x": 910,
+        "y": 1820,
+        "wires": [
+            [
+                "4a4c3feefb284428"
+            ]
+        ]
+    },
+    {
+        "id": "2792c19fc72785b8",
+        "type": "function",
+        "z": "c78f843c437bda5c",
+        "name": "Parse",
+        "func": "msg.options = []\n\nmsg.partners.forEach(partner => {\n    if(partner.cid == msg.payload){\n        msg.options = partner.nodes\n    }\n})\nreturn msg",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 790,
+        "y": 1820,
+        "wires": [
+            [
+                "b061711ed2875f1e"
+            ]
+        ]
+    },
+    {
+        "id": "4a4c3feefb284428",
+        "type": "change",
+        "z": "c78f843c437bda5c",
+        "name": "selected cid",
+        "rules": [
+            {
+                "t": "set",
+                "p": "selectedAgid",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 810,
+        "y": 1880,
+        "wires": [
+            [
+                "b83fcebdac3b1bba"
+            ]
+        ]
+    },
+    {
+        "id": "b83fcebdac3b1bba",
+        "type": "link out",
+        "z": "c78f843c437bda5c",
+        "name": "",
+        "mode": "link",
+        "links": [
+            "5324084eaf1fdf2d"
+        ],
+        "x": 925,
+        "y": 1880,
+        "wires": []
+    },
+    {
+        "id": "3a6c54c6eb610f16",
+        "type": "link out",
+        "z": "c78f843c437bda5c",
+        "name": "",
+        "mode": "link",
+        "links": [
+            "5324084eaf1fdf2d"
+        ],
+        "x": 355,
+        "y": 1560,
+        "wires": []
+    },
+    {
+        "id": "044b9d9e0cfa8a2d",
+        "type": "ui_button",
+        "z": "c78f843c437bda5c",
+        "name": "",
+        "group": "69d7ea2138e75f9b",
+        "order": 5,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "Send query",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 210,
+        "y": 2200,
+        "wires": [
+            [
+                "eae372f27fe0d255"
+            ]
+        ]
+    },
+    {
+        "id": "7bbcf456c425af48",
+        "type": "function",
+        "z": "c78f843c437bda5c",
+        "name": "Parse",
+        "func": "if(msg.SPARQL && msg.cid && msg.agid){\n    msg.payload = msg.SPARQL\n    msg.headers = {'Content-Type': 'text/plain'}\n    return msg\n} else {\n    return [null, {payload: 'Please specify partner, node and SPARQL'}]\n}",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 530,
+        "y": 2200,
+        "wires": [
+            [
+                "a0d128d84397f157"
+            ],
+            [
+                "bd8b66c4c4a216c5"
+            ]
+        ]
+    },
+    {
+        "id": "eae372f27fe0d255",
+        "type": "change",
+        "z": "c78f843c437bda5c",
+        "name": "Get variables",
+        "rules": [
+            {
+                "t": "set",
+                "p": "cid",
+                "pt": "msg",
+                "to": "selectedCid",
+                "tot": "flow"
+            },
+            {
+                "t": "set",
+                "p": "agid",
+                "pt": "msg",
+                "to": "selectedAgid",
+                "tot": "flow"
+            },
+            {
+                "t": "set",
+                "p": "SPARQL",
+                "pt": "msg",
+                "to": "selectedSPARQL",
+                "tot": "flow"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 370,
+        "y": 2200,
+        "wires": [
+            [
+                "7bbcf456c425af48"
+            ]
+        ]
+    },
+    {
+        "id": "a0d128d84397f157",
+        "type": "http request",
+        "z": "c78f843c437bda5c",
+        "name": "Send remote SPARQL query",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://auroral-agent:4000/api/discovery/remote/semantic/{{agid}}",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 740,
+        "y": 2080,
+        "wires": [
+            [
+                "bd5f8d7b825d5fd6"
+            ]
+        ]
+    },
+    {
+        "id": "f9a6d9642cf5cd8c",
+        "type": "change",
+        "z": "c78f843c437bda5c",
+        "name": "Store SPARQL result",
+        "rules": [
+            {
+                "t": "set",
+                "p": "resultSPARQL",
+                "pt": "flow",
+                "to": "payload.message",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 860,
+        "y": 2140,
+        "wires": [
+            [
+                "848b4913ed0f3307"
+            ]
+        ]
+    },
+    {
+        "id": "bd5f8d7b825d5fd6",
+        "type": "function",
+        "z": "c78f843c437bda5c",
+        "name": "Parse",
+        "func": "if(msg.payload.message){\n    if(typeof msg.payload.message  === 'object'){\n        msg.payload.message = JSON.stringify(msg.payload.message, null, 2);\n    }\n    return msg\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 690,
+        "y": 2140,
+        "wires": [
+            [
+                "f9a6d9642cf5cd8c"
+            ]
+        ]
+    },
+    {
+        "id": "848b4913ed0f3307",
+        "type": "link out",
+        "z": "c78f843c437bda5c",
+        "name": "",
+        "mode": "link",
+        "links": [
+            "5324084eaf1fdf2d"
+        ],
+        "x": 995,
+        "y": 2140,
+        "wires": []
+    },
+    {
+        "id": "e7db45ea7c5e9876",
+        "type": "ui_template",
+        "z": "c78f843c437bda5c",
+        "group": "69d7ea2138e75f9b",
+        "name": "SPARQL ",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "format": "\n<textarea id='textArea' placeholder=\"Specify your SPARQL here\" ng-model=\"msg.payload\"  ng-change=\"send(msg)\"  cols=\"40\" rows=\"8\">\n</textarea>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 560,
+        "y": 2040,
+        "wires": [
+            [
+                "febfb34b3433db43"
+            ]
+        ]
+    },
+    {
+        "id": "febfb34b3433db43",
+        "type": "change",
+        "z": "c78f843c437bda5c",
+        "name": "Store",
+        "rules": [
+            {
+                "t": "set",
+                "p": "selectedSPARQL",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 690,
+        "y": 2040,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "eada1cb550dc3576",
+        "type": "ui_ui_control",
+        "z": "c78f843c437bda5c",
+        "name": "",
+        "events": "change",
+        "x": 80,
+        "y": 2060,
+        "wires": [
+            [
+                "1208ab0d4da06801",
+                "199deaff0ce2dfe5"
+            ]
+        ]
+    },
+    {
+        "id": "1208ab0d4da06801",
+        "type": "change",
+        "z": "c78f843c437bda5c",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 260,
+        "y": 2080,
+        "wires": [
+            [
+                "e7db45ea7c5e9876"
+            ]
+        ]
+    },
+    {
+        "id": "3ed8760f953416f4",
+        "type": "ui_template",
+        "z": "c78f843c437bda5c",
+        "group": "0f99c8ea07436709",
+        "name": "RESULT",
+        "order": 3,
+        "width": 14,
+        "height": 7,
+        "format": "<div>\n    <h4>SPARQL:</h4>\n    <pre>{{msg.SPARQL}}</pre>\n</div>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 400,
+        "y": 1940,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "bd8b66c4c4a216c5",
+        "type": "ui_toast",
+        "z": "c78f843c437bda5c",
+        "position": "bottom left",
+        "displayTime": "5",
+        "highlight": "",
+        "sendall": true,
+        "outputs": 0,
+        "ok": "OK",
+        "cancel": "",
+        "raw": false,
+        "className": "",
+        "topic": "",
+        "name": "err notif",
+        "x": 680,
+        "y": 2200,
+        "wires": []
+    },
+    {
+        "id": "3d2b767c5cd21d1f",
+        "type": "ui_dropdown",
+        "z": "c78f843c437bda5c",
+        "name": "",
+        "label": "Predefined SPARQL:",
+        "tooltip": "",
+        "place": "Select option",
+        "group": "69d7ea2138e75f9b",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "multiple": false,
+        "options": [],
+        "payload": "",
+        "topic": "topic",
+        "topicType": "msg",
+        "className": "",
+        "x": 420,
+        "y": 1980,
+        "wires": [
+            [
+                "e7db45ea7c5e9876"
+            ]
+        ]
+    },
+    {
+        "id": "d8a9dcfdb4a761d9",
+        "type": "change",
+        "z": "c78f843c437bda5c",
+        "name": "set Options",
+        "rules": [
+            {
+                "t": "set",
+                "p": "options",
+                "pt": "msg",
+                "to": "[{\"Custom\":\"\"},{\"GET_ALL\":\"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \\nSELECT * WHERE { ?sub ?pred ?obj . } \\n LIMIT 100\"},{\"Option2\":\"OPTION2\"}]",
+                "tot": "json"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 210,
+        "y": 1980,
+        "wires": [
+            [
+                "3d2b767c5cd21d1f"
+            ]
+        ]
+    },
+    {
+        "id": "199deaff0ce2dfe5",
+        "type": "function",
+        "z": "c78f843c437bda5c",
+        "name": "clear",
+        "func": "\nreturn {};",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 70,
+        "y": 1980,
+        "wires": [
+            [
+                "d8a9dcfdb4a761d9"
+            ]
+        ]
     },
     {
         "id": "47fe486c414b603c",
@@ -1754,11 +2723,42 @@
         "className": ""
     },
     {
+        "id": "69d7ea2138e75f9b",
+        "type": "ui_group",
+        "name": "SPARQL",
+        "tab": "88ec06aeda0e3b39",
+        "order": 1,
+        "disp": true,
+        "width": 10,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "0f99c8ea07436709",
+        "type": "ui_group",
+        "name": "Result",
+        "tab": "88ec06aeda0e3b39",
+        "order": 2,
+        "disp": true,
+        "width": 14,
+        "collapse": false,
+        "className": ""
+    },
+    {
         "id": "0fc43f2662d3c814",
         "type": "ui_tab",
         "name": "Consume",
         "icon": "dashboard",
         "order": 1,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "88ec06aeda0e3b39",
+        "type": "ui_tab",
+        "name": "Discover",
+        "icon": "dashboard",
+        "order": 2,
         "disabled": false,
         "hidden": false
     }
