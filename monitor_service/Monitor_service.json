@@ -58,7 +58,7 @@
         "nop": true,
         "unregistering": true,
         "mergePidOutputs": true,
-        "td": "{\n  \"@context\": \"https://www.w3.org/2019/wot/td/v1\",\n  \"title\": \"Monitor service\",\n  \"securityDefinitions\": {\n    \"nosec_sc\": {\n      \"scheme\": \"nosec\"\n    }\n  },\n  \"security\": \"nosec_sc\",\n  \"properties\": {},\n  \"actions\": {},\n  \"events\": {},\n  \"adapterId\": \"node-red-consumer\"\n  \n}",
+        "td": "{\n  \"@context\": \"https://www.w3.org/2019/wot/td/v1\",\n  \"title\": \"Monitor service\",\n  \"@type\": \"Service\",\n \"securityDefinitions\": {\n    \"nosec_sc\": {\n      \"scheme\": \"nosec\"\n    }\n  },\n  \"security\": \"nosec_sc\",\n  \"properties\": {},\n  \"actions\": {},\n  \"events\": {},\n  \"adapterId\": \"node-red-consumer\"\n  \n}",
         "pids": [],
         "eids": [],
         "x": 400,
