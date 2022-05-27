@@ -1,14 +1,13 @@
 # Monitor service example for Auroral Node-RED adapter
 
 ## Instalation
-Import Monitor_service.json file into Node-RED using Menu -> import -> Clipboard / load file
+Import Test_device.json file into Node-RED using Menu -> import -> Clipboard / load file
 
 ## Goal 
-Monitor and request data from your organisation infrastructure.
+Serve static test data in Auroral platform.
 
 ## Used extensions
     - node-red-contrib-auroral  >= 2.0.0
-    - node-red-dashboard        >= 3.1.7
 
 ### Who do I talk to? ###
 

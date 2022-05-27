@@ -1,0 +1,264 @@
+[
+    {
+        "id": "d96ef969c39c1c7c",
+        "type": "tab",
+        "label": "Auroral device",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "47fe486c414b603c",
+        "type": "auroralAgent",
+        "host": "auroral-agent",
+        "port": "4000",
+        "serverPort": "1250",
+        "protocol": "http",
+        "authentification": false,
+        "ignoreCertificate": false
+    },
+    {
+        "id": "0fc43f2662d3c814",
+        "type": "ui_tab",
+        "name": "Consume",
+        "icon": "dashboard",
+        "order": 1,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "88ec06aeda0e3b39",
+        "type": "ui_tab",
+        "name": "Discover",
+        "icon": "dashboard",
+        "order": 2,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "bd7feaf4b8a1bb92",
+        "type": "ui_base",
+        "theme": {
+            "name": "theme-light",
+            "lightTheme": {
+                "default": "#0094CE",
+                "baseColor": "#0094CE",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+                "edited": false
+            },
+            "darkTheme": {
+                "default": "#097479",
+                "baseColor": "#097479",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+                "edited": false
+            },
+            "customTheme": {
+                "name": "Untitled Theme 1",
+                "default": "#4B7930",
+                "baseColor": "#4B7930",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
+            },
+            "themeState": {
+                "base-color": {
+                    "default": "#0094CE",
+                    "value": "#0094CE",
+                    "edited": false
+                },
+                "page-titlebar-backgroundColor": {
+                    "value": "#0094CE",
+                    "edited": false
+                },
+                "page-backgroundColor": {
+                    "value": "#fafafa",
+                    "edited": false
+                },
+                "page-sidebar-backgroundColor": {
+                    "value": "#ffffff",
+                    "edited": false
+                },
+                "group-textColor": {
+                    "value": "#1bbfff",
+                    "edited": false
+                },
+                "group-borderColor": {
+                    "value": "#ffffff",
+                    "edited": false
+                },
+                "group-backgroundColor": {
+                    "value": "#ffffff",
+                    "edited": false
+                },
+                "widget-textColor": {
+                    "value": "#111111",
+                    "edited": false
+                },
+                "widget-backgroundColor": {
+                    "value": "#0094ce",
+                    "edited": false
+                },
+                "widget-borderColor": {
+                    "value": "#ffffff",
+                    "edited": false
+                },
+                "base-font": {
+                    "value": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
+                }
+            },
+            "angularTheme": {
+                "primary": "indigo",
+                "accents": "blue",
+                "warn": "red",
+                "background": "grey",
+                "palette": "light"
+            }
+        },
+        "site": {
+            "name": "Node-RED Dashboard",
+            "hideToolbar": "false",
+            "allowSwipe": "false",
+            "lockMenu": "false",
+            "allowTempTheme": "true",
+            "dateFormat": "DD/MM/YYYY",
+            "sizes": {
+                "sx": 48,
+                "sy": 48,
+                "gx": 6,
+                "gy": 6,
+                "cx": 6,
+                "cy": 6,
+                "px": 0,
+                "py": 0
+            }
+        }
+    },
+    {
+        "id": "93b7cc5b13768da4",
+        "type": "auroralDevice",
+        "z": "d96ef969c39c1c7c",
+        "name": "Test device static",
+        "adapterId": "testDeviceStatic",
+        "oid": "",
+        "agent": "47fe486c414b603c",
+        "regType": "newItem",
+        "outputs": 1,
+        "inputs": 0,
+        "allowInput": false,
+        "allowEventSubscription": false,
+        "subscribedEvents": [],
+        "devicetype": "Device",
+        "nop": false,
+        "unregistering": true,
+        "mergePidOutputs": true,
+        "td": "{\n    \"title\": \"Test device static\",\n    \"@context\": [\n        \"https://www.w3.org/2019/wot/td/v1\",\n        \"https://w3c.github.io/wot-discovery/context/discovery-context.jsonld\"\n    ],\n    \"security\": [\n        \"nosec_sc\"\n    ],\n    \"securityDefinitions\": {\n        \"nosec_sc\": {\n            \"scheme\": \"nosec\"\n        }\n    },\n    \"@type\": \"Device\",\n    \"located_in\": {\n        \"location_type\": \"Building\",\n        \"location_id\": \"http://dbpedia.org/building/example\",\n        \"label\": \"Wooden house\"\n    },\n    \"description\": \"Test device returning static data\",\n    \"properties\": {\n        \"temperature\": {\n            \"monitors\": \"AmbientTemperature\",\n            \"measures\": \"°C\",\n            \"readOnly\": true,\n            \"type\": \"number\"\n        },\n        \"humidity\": {\n            \"monitors\": \"RelativeHumidity\",\n            \"measures\": \"%\",\n            \"readOnly\": true,\n            \"type\": \"number\"\n        }\n    },\n    \"adapterId\": \"testDeviceStatic\"\n}",
+        "pids": [
+            "temperature",
+            "humidity"
+        ],
+        "eids": [],
+        "x": 120,
+        "y": 100,
+        "wires": [
+            [
+                "a3e450233931c9b8"
+            ]
+        ]
+    },
+    {
+        "id": "a3e450233931c9b8",
+        "type": "switch",
+        "z": "d96ef969c39c1c7c",
+        "name": "switch by PID",
+        "property": "pid",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "temperature",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "humidity",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 300,
+        "y": 100,
+        "wires": [
+            [
+                "bb7cb24d70fa66ed"
+            ],
+            [
+                "9ca71f92731bcd86"
+            ]
+        ]
+    },
+    {
+        "id": "bb7cb24d70fa66ed",
+        "type": "change",
+        "z": "d96ef969c39c1c7c",
+        "name": "set humidity",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "56",
+                "tot": "num"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 510,
+        "y": 60,
+        "wires": [
+            [
+                "39b777565f773f72"
+            ]
+        ]
+    },
+    {
+        "id": "9ca71f92731bcd86",
+        "type": "change",
+        "z": "d96ef969c39c1c7c",
+        "name": "set temperature",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "25",
+                "tot": "num"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 500,
+        "y": 140,
+        "wires": [
+            [
+                "39b777565f773f72"
+            ]
+        ]
+    },
+    {
+        "id": "39b777565f773f72",
+        "type": "auroralResponse",
+        "z": "d96ef969c39c1c7c",
+        "name": "",
+        "agent": "",
+        "pids": "PID1",
+        "x": 710,
+        "y": 100,
+        "wires": []
+    }
+]
