@@ -1,0 +1,281 @@
+[
+    {
+        "id": "89186591355b89a6",
+        "type": "tab",
+        "label": "Test device OW",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "f0d7a4c2618fef2a",
+        "type": "auroralDevice",
+        "z": "89186591355b89a6",
+        "name": "Test device OW",
+        "adapterId": "test",
+        "oid": "",
+        "agent": "c009485b2ce6d1d8",
+        "regType": "newItem",
+        "outputs": 1,
+        "inputs": 0,
+        "allowInput": false,
+        "allowEventSubscription": false,
+        "subscribedEvents": [],
+        "devicetype": "Device",
+        "nop": true,
+        "unregistering": true,
+        "mergePidOutputs": true,
+        "td": "{\n    \"@context\": \"https://www.w3.org/2019/wot/td/v1\",\n    \"title\": \"Test device OW\",\n    \"@type\": \"Device\",\n    \"securityDefinitions\": {\n        \"nosec_sc\": {\n            \"scheme\": \"nosec\"\n        }\n    },\n    \"security\": \"nosec_sc\",\n    \"properties\": {\n        \"temperature\": {\n            \"monitors\": \"temperature\",\n            \"measures\": \"°C\",\n            \"type\": \"number\",\n            \"readOnly\": true\n        },\n        \"humidity\": {\n            \"monitors\": \"relativeHumidity\",\n            \"measures\": \"%\",\n            \"type\": \"number\",\n            \"readOnly\": true\n        }\n    },\n    \"actions\": {},\n    \"events\": {},\n    \"adapterId\": \"test\"\n}",
+        "pids": [
+            "temperature",
+            "humidity"
+        ],
+        "eids": [],
+        "x": 120,
+        "y": 120,
+        "wires": [
+            [
+                "f12c9cfd635cc77a"
+            ]
+        ]
+    },
+    {
+        "id": "cb880b28681d82c3",
+        "type": "http request",
+        "z": "89186591355b89a6",
+        "name": "OW api call",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "api.openweathermap.org/data/2.5/weather?q={{location}}&appid={{APPID}}&units=metric",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 130,
+        "y": 200,
+        "wires": [
+            [
+                "8c1d511f3ec008b8"
+            ]
+        ]
+    },
+    {
+        "id": "f12c9cfd635cc77a",
+        "type": "change",
+        "z": "89186591355b89a6",
+        "name": "Configuration",
+        "rules": [
+            {
+                "t": "set",
+                "p": "APPID",
+                "pt": "msg",
+                "to": "YOUR_API_KEY_HERE",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "location",
+                "pt": "msg",
+                "to": "Bratislava",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 300,
+        "y": 80,
+        "wires": [
+            [
+                "cb880b28681d82c3"
+            ]
+        ]
+    },
+    {
+        "id": "ba372ce8a032455e",
+        "type": "switch",
+        "z": "89186591355b89a6",
+        "name": "by PID",
+        "property": "pid",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "temperature",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "humidity",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 330,
+        "y": 240,
+        "wires": [
+            [
+                "a27f9b5382f7cde6"
+            ],
+            [
+                "8e7d44f7a14b9aaa"
+            ]
+        ]
+    },
+    {
+        "id": "a27f9b5382f7cde6",
+        "type": "change",
+        "z": "89186591355b89a6",
+        "name": "extract temp",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.main.temp",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 510,
+        "y": 200,
+        "wires": [
+            [
+                "e7eb9ebb4e2fccb4"
+            ]
+        ]
+    },
+    {
+        "id": "8e7d44f7a14b9aaa",
+        "type": "change",
+        "z": "89186591355b89a6",
+        "name": "extract hum",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.main.humidity",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 510,
+        "y": 260,
+        "wires": [
+            [
+                "e7eb9ebb4e2fccb4"
+            ]
+        ]
+    },
+    {
+        "id": "e7eb9ebb4e2fccb4",
+        "type": "auroralResponse",
+        "z": "89186591355b89a6",
+        "name": "",
+        "agent": "",
+        "pids": "PID1",
+        "x": 730,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "8c1d511f3ec008b8",
+        "type": "switch",
+        "z": "89186591355b89a6",
+        "name": "statusCode",
+        "property": "statusCode",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "200",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 150,
+        "y": 260,
+        "wires": [
+            [
+                "ba372ce8a032455e"
+            ],
+            [
+                "d6de9c710bc8baa5"
+            ]
+        ]
+    },
+    {
+        "id": "d6de9c710bc8baa5",
+        "type": "change",
+        "z": "89186591355b89a6",
+        "name": "Handle error",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "Not found",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "statusCode",
+                "pt": "msg",
+                "to": "400",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 350,
+        "y": 340,
+        "wires": [
+            [
+                "e7eb9ebb4e2fccb4"
+            ]
+        ]
+    },
+    {
+        "id": "07971ae40667cc1a",
+        "type": "comment",
+        "z": "89186591355b89a6",
+        "name": "Configure here",
+        "info": "",
+        "x": 300,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "c009485b2ce6d1d8",
+        "type": "auroralAgent",
+        "host": "auroral-agent",
+        "port": "4000",
+        "serverPort": "1250",
+        "protocol": "http",
+        "authentification": false,
+        "ignoreCertificate": false
+    }
+]
