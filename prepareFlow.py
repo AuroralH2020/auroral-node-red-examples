@@ -19,7 +19,7 @@ if len(sys.argv) > 2:
 inputFile = None
 outputFile = None
 try:
-    inputFile = open('Test_device.json', "r")
+    inputFile = open(inputFileName, "r")
 except:
     print('Please check input file')
     exit(1)
