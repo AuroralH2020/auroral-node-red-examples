@@ -1,0 +1,272 @@
+[
+    {
+        "id": "5b6cd46cec7ef3cd",
+        "type": "tab",
+        "label": "Test device MQTT",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "45e53b626dbb06fd",
+        "type": "auroralDevice",
+        "z": "5b6cd46cec7ef3cd",
+        "name": "TestProducer",
+        "adapterId": "test_mqtt_producer",
+        "oid": "",
+        "agent": "c009485b2ce6d1d8",
+        "regType": "newItem",
+        "outputs": 0,
+        "inputs": 1,
+        "allowInput": false,
+        "allowEventSubscription": false,
+        "subscribedEvents": [],
+        "devicetype": "Device",
+        "nop": true,
+        "unregistering": true,
+        "mergePidOutputs": true,
+        "td": "{\n    \"@context\": [\n        \"https://www.w3.org/2019/wot/td/v1\",\n        \"https://w3c.github.io/wot-discovery/context/discovery-context.jsonld\"\n    ],\n    \"title\": \"TestProducer\",\n    \"@type\": \"MonitoringSensor\",\n    \"securityDefinitions\": {\n        \"nosec_sc\": {\n            \"scheme\": \"nosec\"\n        }\n    },\n    \"security\": \"nosec_sc\",\n    \"properties\": {},\n    \"actions\": {},\n    \"events\": {\n        \"co2\": {\n            \"title\": \"co2\",\n            \"monitors\": \"CarbonDioxide\",\n            \"forms\": []\n        }\n    },\n    \"adapterId\": \"test_mqtt_device\"\n}",
+        "pids": [],
+        "eids": [
+            "co2"
+        ],
+        "x": 630,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "87518b6d983256ad",
+        "type": "mqtt in",
+        "z": "5b6cd46cec7ef3cd",
+        "name": "",
+        "topic": "auroral/MQTT_TEST",
+        "qos": "2",
+        "datatype": "json",
+        "broker": "e37cd653f81edfca",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 190,
+        "y": 100,
+        "wires": [
+            [
+                "50ca4ac4b3acc4e0"
+            ]
+        ]
+    },
+    {
+        "id": "50ca4ac4b3acc4e0",
+        "type": "change",
+        "z": "5b6cd46cec7ef3cd",
+        "name": "type, eid and payload",
+        "rules": [
+            {
+                "t": "set",
+                "p": "type",
+                "pt": "msg",
+                "to": "event",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "eid",
+                "pt": "msg",
+                "to": "co2",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.co2",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 420,
+        "y": 100,
+        "wires": [
+            [
+                "45e53b626dbb06fd"
+            ]
+        ]
+    },
+    {
+        "id": "ddfff851944fe880",
+        "type": "auroralDevice",
+        "z": "5b6cd46cec7ef3cd",
+        "name": "TestConsumer",
+        "adapterId": "test_mqtt_constumer",
+        "oid": "",
+        "agent": "c009485b2ce6d1d8",
+        "regType": "newItem",
+        "outputs": 1,
+        "inputs": 0,
+        "allowInput": false,
+        "allowEventSubscription": true,
+        "subscribedEvents": [
+            {
+                "oid": "<OID_OF_CONSUMER_DEVICE>",
+                "eid": "co2"
+            }
+        ],
+        "devicetype": "Device",
+        "nop": false,
+        "unregistering": true,
+        "mergePidOutputs": true,
+        "td": "{\n    \"@context\": [\n        \"https://www.w3.org/2019/wot/td/v1\",\n        \"https://w3c.github.io/wot-discovery/context/discovery-context.jsonld\"\n    ],\n    \"title\": \"TestConsumer\",\n    \"@type\": \"Device\",\n    \"securityDefinitions\": {\n        \"nosec_sc\": {\n            \"scheme\": \"nosec\"\n        }\n    },\n    \"security\": \"nosec_sc\",\n    \"properties\": {},\n    \"actions\": {},\n    \"events\": {},\n    \"adapterId\": \"wef43q\"\n}",
+        "pids": [],
+        "eids": [],
+        "x": 170,
+        "y": 280,
+        "wires": [
+            [
+                "fc5d32cb0614cd69"
+            ]
+        ]
+    },
+    {
+        "id": "fc5d32cb0614cd69",
+        "type": "debug",
+        "z": "5b6cd46cec7ef3cd",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 370,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "f867d0b77b7ea0b9",
+        "type": "comment",
+        "z": "5b6cd46cec7ef3cd",
+        "name": "Producer",
+        "info": "",
+        "x": 120,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "b62c6f4b7edb86cb",
+        "type": "comment",
+        "z": "5b6cd46cec7ef3cd",
+        "name": "Consumer",
+        "info": "",
+        "x": 120,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "f9b7f9474a53f009",
+        "type": "comment",
+        "z": "5b6cd46cec7ef3cd",
+        "name": "Please specify OID and EID here",
+        "info": "",
+        "x": 230,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "5d6734b375fe3813",
+        "type": "mqtt out",
+        "z": "5b6cd46cec7ef3cd",
+        "name": "",
+        "topic": "auroral/MQTT_TEST",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "e37cd653f81edfca",
+        "x": 700,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "0bb5f934ae7e0135",
+        "type": "inject",
+        "z": "5b6cd46cec7ef3cd",
+        "name": "Send MQTT message",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"co2\":1300}",
+        "payloadType": "json",
+        "x": 680,
+        "y": 280,
+        "wires": [
+            [
+                "5d6734b375fe3813"
+            ]
+        ]
+    },
+    {
+        "id": "5a5c440d4e528c71",
+        "type": "comment",
+        "z": "5b6cd46cec7ef3cd",
+        "name": "Send MQTT message",
+        "info": "",
+        "x": 640,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "c009485b2ce6d1d8",
+        "type": "auroralAgent",
+        "host": "auroral-agent",
+        "port": "4000",
+        "serverPort": "1250",
+        "protocol": "http",
+        "authentification": false,
+        "ignoreCertificate": false
+    },
+    {
+        "id": "e37cd653f81edfca",
+        "type": "mqtt-broker",
+        "name": "test_broker",
+        "broker": "broker.hivemq.com",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "sessionExpiry": ""
+    }
+]

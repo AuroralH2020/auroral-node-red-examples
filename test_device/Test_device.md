@@ -1,5 +1,5 @@
-# Monitor service example for Auroral Node-RED adapter
-
+# Dummy test device exposing static data
+Registers dummy device exposing static property data
 ## Instalation
 Import Test_device.json file into Node-RED using Menu -> import -> Clipboard / load file
 
