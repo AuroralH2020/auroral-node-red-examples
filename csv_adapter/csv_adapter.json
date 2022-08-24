@@ -1,0 +1,249 @@
+[
+    {
+        "id": "f6f2187d.f17ca8",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "3cc11d24.ff01a2",
+        "type": "comment",
+        "z": "f6f2187d.f17ca8",
+        "name": "WARNING: please check you have started this container with a volume that is mounted to /data\\n otherwise any flow changes are lost when you redeploy or upgrade the container\\n (e.g. upgrade to a more recent node-red docker image).\\n  If you are using named volumes you can ignore this warning.\\n Double click or see info side panel to learn how to start Node-RED in Docker to save your work",
+        "info": "\nTo start docker with a bind mount volume (-v option), for example:\n\n```\ndocker run -it -p 1880:1880 -v /home/user/node_red_data:/data --name mynodered nodered/node-red\n```\n\nwhere `/home/user/node_red_data` is a directory on your host machine where you want to store your flows.\n\nIf you do not do this then you can experiment and redploy flows, but if you restart or upgrade the container the flows will be disconnected and lost. \n\nThey will still exist in a hidden data volume, which can be recovered using standard docker techniques, but that is much more complex than just starting with a named volume as described above.",
+        "x": 350,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "73e4e16.4d9742",
+        "type": "inject",
+        "z": "f6f2187d.f17ca8",
+        "name": "Load Data",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "1",
+        "topic": "",
+        "x": 190,
+        "y": 320,
+        "wires": [
+            [
+                "2bef78fd.ae70f8"
+            ]
+        ]
+    },
+    {
+        "id": "90ed51dc.dcc71",
+        "type": "csv",
+        "z": "f6f2187d.f17ca8",
+        "name": "",
+        "sep": ";",
+        "hdrin": true,
+        "hdrout": "none",
+        "multi": "mult",
+        "ret": "\\n",
+        "temp": "",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": false,
+        "include_null_values": false,
+        "x": 510,
+        "y": 320,
+        "wires": [
+            [
+                "831826180850b01b"
+            ]
+        ]
+    },
+    {
+        "id": "2bef78fd.ae70f8",
+        "type": "template",
+        "z": "f6f2187d.f17ca8",
+        "name": "CSV data",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "location;area;age;points\nspain;60;15;30\nspain;75;10;20\naustria;60;5;5",
+        "output": "str",
+        "x": 360,
+        "y": 320,
+        "wires": [
+            [
+                "90ed51dc.dcc71"
+            ]
+        ]
+    },
+    {
+        "id": "67791481f9b4a6eb",
+        "type": "auroralDevice",
+        "z": "f6f2187d.f17ca8",
+        "name": "MyCSVChart",
+        "adapterId": "csv-adapter",
+        "oid": "fc21b238-6fa6-4f26-9daf-750ce030530c",
+        "agent": "47fe486c414b603c",
+        "regType": "newItem",
+        "outputs": 1,
+        "inputs": 0,
+        "allowInput": false,
+        "allowEventSubscription": false,
+        "subscribedEvents": [],
+        "devicetype": "Device",
+        "nop": true,
+        "unregistering": true,
+        "mergePidOutputs": true,
+        "td": "{\n  \"id\": \"fc21b238-6fa6-4f26-9daf-750ce030530c\",\n  \"adapterId\": \"csv-adapter\",\n  \"securityDefinitions\": {\n    \"nosec_sc\": {\n      \"scheme\": \"nosec\"\n    }\n  },\n  \"description\": \"CSV chart with reparability index\",\n  \"properties\": {\n    \"csv_measurement\": {\n      \"forms\": [\n        {\n          \"href\": \"http://node-red:1250/api/property/fc21b238-6fa6-4f26-9daf-750ce030530c/csv_measurement\",\n          \"op\": \"readproperty\"\n        }\n      ],\n      \"monitors\": \"repairIndex\",\n      \"readOnly\": true,\n      \"title\": \"csv_measurement\",\n      \"type\": \"number\"\n    }\n  },\n  \"title\": \"MyCSVChart\",\n  \"type\": \"Device\",\n  \"registration\": {\n    \"created\": \"2022-08-24T09:58:39.381Z\",\n    \"modified\": \"2022-08-24T09:58:39.398Z\"\n  },\n  \"@context\": [\n    \"https://www.w3.org/2019/wot/td/v1\",\n    \"https://w3c.github.io/wot-discovery/context/discovery-context.jsonld\",\n    \"https://w3c.github.io/wot-discovery/context/discovery-context.jsonld\"\n  ],\n  \"security\": [\n    \"nosec_sc\"\n  ],\n  \"@type\": [\n    \"CSVChart\"\n  ]\n}",
+        "pids": [
+            "csv_measurement"
+        ],
+        "eids": [],
+        "x": 170,
+        "y": 600,
+        "wires": [
+            [
+                "1254be3a73a31ee6"
+            ]
+        ]
+    },
+    {
+        "id": "311d2beebb09c806",
+        "type": "Cache out",
+        "z": "f6f2187d.f17ca8",
+        "name": "CSV Cache",
+        "cache": "ef6338047c77d8e3",
+        "keyType": "msg",
+        "keyProperty": "topic",
+        "valueType": "msg",
+        "valueProperty": "payload",
+        "ttlType": "msg",
+        "ttlProperty": "",
+        "useString": true,
+        "x": 830,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "9bab7a004637f188",
+        "type": "Cache in",
+        "z": "f6f2187d.f17ca8",
+        "name": "Output",
+        "cache": "ef6338047c77d8e3",
+        "keyType": "msg",
+        "keyProperty": "topic",
+        "valueType": "msg",
+        "valueProperty": "payload",
+        "useString": false,
+        "outputs": 1,
+        "x": 530,
+        "y": 480,
+        "wires": [
+            [
+                "b7363baa6c2a3d33"
+            ]
+        ]
+    },
+    {
+        "id": "831826180850b01b",
+        "type": "change",
+        "z": "f6f2187d.f17ca8",
+        "name": "Add Topic",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "data",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 640,
+        "y": 260,
+        "wires": [
+            [
+                "311d2beebb09c806"
+            ]
+        ]
+    },
+    {
+        "id": "b8056a090ae1fa3f",
+        "type": "auroralResponse",
+        "z": "f6f2187d.f17ca8",
+        "name": "",
+        "agent": "",
+        "pids": "PID1",
+        "x": 870,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "1254be3a73a31ee6",
+        "type": "change",
+        "z": "f6f2187d.f17ca8",
+        "name": "Add Topic",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "data",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 360,
+        "y": 540,
+        "wires": [
+            [
+                "9bab7a004637f188"
+            ]
+        ]
+    },
+    {
+        "id": "b7363baa6c2a3d33",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "Filter Value",
+        "func": "var result = null\nvar loc = msg.queryParams.location\nvar area = msg.queryParams.area\nvar age = msg.queryParams.age\nfor (i = 0, l = msg.payload.length; i < l; i++){\n    var x = msg.payload[i]\n    if (loc === x.location && Number(area) === Number(x.area) && Number(age) === Number(x.age)) {\n        result = x.points\n    }\n}\nif (!result) {\n    result = 0\n}\nmsg.payload = result\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 670,
+        "y": 560,
+        "wires": [
+            [
+                "b8056a090ae1fa3f"
+            ]
+        ]
+    },
+    {
+        "id": "47fe486c414b603c",
+        "type": "auroralAgent",
+        "host": "auroral-agent",
+        "port": "4000",
+        "serverPort": "1250",
+        "protocol": "http",
+        "authentification": false,
+        "ignoreCertificate": false
+    },
+    {
+        "id": "ef6338047c77d8e3",
+        "type": "Cache",
+        "name": "Cache",
+        "defaultTtl": "",
+        "checkPeriod": ""
+    }
+]
