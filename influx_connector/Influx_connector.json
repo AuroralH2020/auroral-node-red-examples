@@ -1,0 +1,179 @@
+[
+    {
+        "id": "f6f2187d.f17ca8",
+        "type": "tab",
+        "label": "Influx connector",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "337511026d1ce2dc",
+        "type": "influxdb out",
+        "z": "f6f2187d.f17ca8",
+        "influxdb": "24cf801484b38c4e",
+        "name": "bucket0",
+        "measurement": "test",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "database",
+        "precisionV18FluxV20": "s",
+        "retentionPolicyV18Flux": "",
+        "org": "bavenir",
+        "bucket": "bucket0",
+        "x": 740,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "320dfc017883f032",
+        "type": "auroralDevice",
+        "z": "f6f2187d.f17ca8",
+        "name": "InfluxDB connector 2",
+        "adapterId": "influx_db_2",
+        "oid": "",
+        "agent": "4520a4350cfe47d9",
+        "regType": "newItem",
+        "outputs": 1,
+        "inputs": 1,
+        "allowInput": true,
+        "allowEventSubscription": false,
+        "subscribedEvents": [],
+        "devicetype": "Device",
+        "nop": false,
+        "unregistering": true,
+        "mergePidOutputs": true,
+        "td": "{\n    \"adapterId\": \"influx_db_2\",\n    \"securityDefinitions\": {\n        \"nosec_sc\": {\n            \"scheme\": \"nosec\"\n        }\n    },\n    \"description\": \"InfluxDB connector\",\n    \"title\": \"InfluxDB connector 2\",\n    \"registration\": {\n        \"created\": \"2022-10-04T12:12:54.406Z\",\n        \"modified\": \"2022-10-04T12:12:54.406Z\"\n    },\n    \"@context\": [\n        \"https://www.w3.org/2019/wot/td/v1\",\n        \"https://w3c.github.io/wot-discovery/context/discovery-context.jsonld\"\n    ],\n    \"security\": [\n        \"nosec_sc\"\n    ],\n    \"@type\": [\n        \"Ontology:DeviceType\"\n    ]\n}",
+        "pids": [],
+        "eids": [],
+        "x": 320,
+        "y": 280,
+        "wires": [
+            [
+                "8ed4e178309b443b"
+            ]
+        ]
+    },
+    {
+        "id": "d76d4e2ae3b8fc0f",
+        "type": "inject",
+        "z": "f6f2187d.f17ca8",
+        "name": "read",
+        "props": [],
+        "repeat": "10",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 110,
+        "y": 60,
+        "wires": [
+            [
+                "d9a7f88d56e97d22"
+            ]
+        ]
+    },
+    {
+        "id": "d9a7f88d56e97d22",
+        "type": "change",
+        "z": "f6f2187d.f17ca8",
+        "name": "REMOTE OID + PID",
+        "rules": [
+            {
+                "t": "set",
+                "p": "type",
+                "pt": "msg",
+                "to": "property",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "oid",
+                "pt": "msg",
+                "to": "11624844-969c-4301-90e8-5a39ec6ea113",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "pid",
+                "pt": "msg",
+                "to": "temperature",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 160,
+        "y": 180,
+        "wires": [
+            [
+                "320dfc017883f032"
+            ]
+        ]
+    },
+    {
+        "id": "8ed4e178309b443b",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "Process data format",
+        "func": "let obj = {}\nobj[msg.pid] = parseInt(msg.payload.makesMeasurement[0].hasValue)\nmsg.measurement = 'netatmo'\n\nmsg.payload = [obj, {'location': 'office'}]\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 540,
+        "y": 280,
+        "wires": [
+            [
+                "337511026d1ce2dc"
+            ]
+        ]
+    },
+    {
+        "id": "3f3551e3b9c67eb5",
+        "type": "comment",
+        "z": "f6f2187d.f17ca8",
+        "name": "Please change remote OID and PID",
+        "info": "Please change remote OID and PID",
+        "x": 260,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "3015f3f810ec6356",
+        "type": "comment",
+        "z": "f6f2187d.f17ca8",
+        "name": "Update your Influx connection",
+        "info": "Please change remote OID and PID",
+        "x": 700,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "24cf801484b38c4e",
+        "type": "influxdb",
+        "hostname": "http://influxdb",
+        "port": "8086",
+        "protocol": "http",
+        "database": "database",
+        "name": "Local",
+        "usetls": false,
+        "tls": "",
+        "influxdbVersion": "2.0",
+        "url": "http://influxdb:8086",
+        "rejectUnauthorized": true
+    },
+    {
+        "id": "4520a4350cfe47d9",
+        "type": "auroralAgent",
+        "host": "auroral-agent",
+        "port": "4000",
+        "serverPort": "1250",
+        "protocol": "http",
+        "authentification": false,
+        "ignoreCertificate": false
+    }
+]
