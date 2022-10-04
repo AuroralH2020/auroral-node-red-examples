@@ -59,7 +59,7 @@
         "z": "f6f2187d.f17ca8",
         "name": "read",
         "props": [],
-        "repeat": "10",
+        "repeat": "600",
         "crontab": "",
         "once": false,
         "onceDelay": 0.1,
