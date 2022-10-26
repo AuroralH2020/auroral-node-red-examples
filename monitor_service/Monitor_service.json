@@ -3293,8 +3293,8 @@
     {
         "id": "0f0df5d5e0a88e0c",
         "type": "auroralAgent",
-        "host": "myhost",
-        "port": "81",
+        "host": "auroral-agent",
+        "port": "4000",
         "serverPort": "1250",
         "protocol": "http",
         "authentification": false,
