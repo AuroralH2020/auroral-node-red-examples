@@ -1,0 +1,105 @@
+[
+    {
+        "id": "dd285a3bb1400f49",
+        "type": "tab",
+        "label": "Netatmo",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "450f782114ed1202",
+        "type": "auroralDevice",
+        "z": "dd285a3bb1400f49",
+        "name": "OfficeSensor",
+        "adapterId": "r3f4weaget4",
+        "oid": "",
+        "agent": "054a7062da56e217",
+        "regType": "newItem",
+        "outputs": 1,
+        "inputs": 0,
+        "allowInput": false,
+        "allowEventSubscription": false,
+        "subscribedEvents": [],
+        "devicetype": "Device",
+        "nop": true,
+        "unregistering": true,
+        "mergePidOutputs": true,
+        "td": "{\n    \"@context\": [\n        \"https://www.w3.org/2019/wot/td/v1\",\n        {\n            \"adp\": \"https://auroral.iot.linkeddata.es/def/adapters#\",\n            \"om\": \"http://www.ontology-of-units-of-measure.org/resource/om-2/\",\n            \"geo\": \"http://www.w3.org/2003/01/geo/wgs84_pos#\"\n        }\n    ],\n    \"security\": [\n        \"nosec_sc\"\n    ],\n    \"securityDefinitions\": {\n        \"nosec_sc\": {\n            \"scheme\": \"nosec\"\n        }\n    },\n    \"geo:location\": {\n        \"geo:lat\": \"30.89600807058707\",\n        \"geo:long\": \"29.94281464724796\"\n    },\n    \"title\": \"OfficeSensor\",\n    \"@type\": \"adp:Sensor\",\n    \"description\": \"Netatmo indoor sensor\",\n    \"properties\": {\n        \"temperature\": {\n            \"title\": \"temperature\",\n            \"description\": \"Temperature in the room\",\n            \"@type\": \"adp:AmbientTemperature\",\n            \"unit\": \"om:degree_Celsius\",\n            \"readOnly\": true,\n            \"type\": \"number\",\n            \"forms\": [\n                {\n                    \"op\": \"readproperty\",\n                    \"href\": \"http://192.168.0.1:123/api/temperature\"\n                }\n            ]\n        },\n        \"humidity\": {\n            \"title\": \"humidity\",\n            \"description\": \"Humidity in the room\",\n            \"@type\": \"adp:RelativeHumidity\",\n            \"unit\": \"om:degree_Celsius\",\n            \"readOnly\": true,\n            \"type\": \"number\",\n            \"forms\": [\n                {\n                    \"op\": \"readproperty\",\n                    \"href\": \"http://192.168.0.1:123/api/humidity\"\n                }\n            ]\n        },\n        \"co2\": {\n            \"title\": \"co2\",\n            \"description\": \"CO2 in the room\",\n            \"@type\": \"adp:CO2\",\n            \"unit\": \"om:ppm\",\n            \"readOnly\": true,\n            \"type\": \"number\",\n            \"forms\": [\n                {\n                    \"op\": \"readproperty\",\n                    \"href\": \"http://192.168.0.1:123/api/CO2\"\n                }\n            ]\n        },\n        \"noise\": {\n            \"title\": \"noise\",\n            \"description\": \"Noise in the room\",\n            \"@type\": \"adp:Noise\",\n            \"unit\": \"om:decibel\",\n            \"readOnly\": true,\n            \"type\": \"number\",\n            \"forms\": [\n                {\n                    \"op\": \"readproperty\",\n                    \"href\": \"http://192.168.0.1:123/api/noise\"\n                }\n            ]\n        },\n        \"pressure\": {\n            \"title\": \"pressure\",\n            \"description\": \"Pressure in the room\",\n            \"@type\": \"adp:AtmosphoricPressure\",\n            \"unit\": \"om:mbar\",\n            \"readOnly\": true,\n            \"type\": \"number\",\n            \"forms\": [\n                {\n                    \"op\": \"readproperty\",\n                    \"href\": \"http://192.168.0.1:123/api/pressure\"\n                }\n            ]\n        }\n    },\n    \"adapterId\": \"r3f4weaget4\"\n}",
+        "pids": [
+            "temperature",
+            "humidity",
+            "co2",
+            "noise",
+            "pressure"
+        ],
+        "eids": [],
+        "x": 310,
+        "y": 180,
+        "wires": [
+            [
+                "48d9c9616455f48b"
+            ]
+        ]
+    },
+    {
+        "id": "31460fe86bd66050",
+        "type": "function",
+        "z": "dd285a3bb1400f49",
+        "name": "extract",
+        "func": "const data = msg.payload.devices[0].dashboard_data\nlet value\nif(msg.pid==='temperature') {\n    value = data.Temperature\n} else if (msg.pid === 'humidity') {\n    value = data.Humidity\n} else if(msg.pid === 'Noise') {\n    value = data.Noise\n} else if (msg.pid === 'presusre') {\n    value = data.Pressure\n} else if (msg.pid === 'absolutePressure') {\n    value = data.AbsolutePressure\n}\nreturn {...msg, payload: value};",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 770,
+        "y": 180,
+        "wires": [
+            [
+                "524b1ad6f1da1694"
+            ]
+        ]
+    },
+    {
+        "id": "524b1ad6f1da1694",
+        "type": "auroralResponse",
+        "z": "dd285a3bb1400f49",
+        "name": "",
+        "agent": "",
+        "pids": "PID1",
+        "x": 950,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "48d9c9616455f48b",
+        "type": "get stations data",
+        "z": "dd285a3bb1400f49",
+        "name": "NETATMO Office",
+        "deviceId": "",
+        "getFavorites": false,
+        "creds": "8102bf19c57cab06",
+        "x": 550,
+        "y": 180,
+        "wires": [
+            [
+                "31460fe86bd66050"
+            ]
+        ]
+    },
+    {
+        "id": "054a7062da56e217",
+        "type": "auroralAgent",
+        "host": "auroral-agent",
+        "port": "4000",
+        "serverPort": "1250",
+        "protocol": "http",
+        "authentification": false,
+        "ignoreCertificate": false
+    },
+    {
+        "id": "8102bf19c57cab06",
+        "type": "configNode",
+        "name": "Office"
+    }
+]
