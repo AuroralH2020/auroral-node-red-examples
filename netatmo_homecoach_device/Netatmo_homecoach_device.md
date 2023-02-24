@@ -9,8 +9,6 @@ Registers two AURORAL devices:
 ## Goal 
 Serve data from Netatmo HomeCoach device in Auroral platform.
 
-![Flow view!](/mqtt_device/Mqtt_device.png)
-
 ## Used extensions
     - node-red-contrib-auroral  >= 2.0.0
     - node-red-contrib-netatmo >= 0.3.0
