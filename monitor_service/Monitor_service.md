@@ -1,6 +1,6 @@
 # Monitor service example for Auroral Node-RED adapter
 
-This is a service that can be integrated as a Node-RED flow. It registers a new service in AURORAL automatically and opens a UI on <nodered-host>:<nodered-port>/ui.
+This is a service that can be integrated as a Node-RED flow. It registers a new service in AURORAL automatically and opens a UI on {nodered-host}:{nodered-port}/ui.
 This UI lets the user discover the local node items and also remote nodes, featuring SPARQL queries that can be used as example. It also allows to consume data from nodes that belong to your organisation.
 
 ## Installation
